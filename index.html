@@ -17,13 +17,21 @@
     font-family: 'Barlow', sans-serif; min-height: 100vh;
     background-image: repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.015) 40px, rgba(255,255,255,0.015) 41px);
   }
-  header {
-    background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%);
-    border-bottom: 3px solid var(--fire);
-    padding: 12px 20px; display: flex; align-items: center;
-    justify-content: space-between; position: sticky; top: 0; z-index: 100;
-    box-shadow: 0 4px 20px rgba(255,90,0,0.3);
-  }
+  .password-screen { position: fixed; inset: 0; background: var(--smoke); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; gap: 20px; background-image: repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.015) 40px, rgba(255,255,255,0.015) 41px); }
+  .pw-logo { font-family: 'Oswald', sans-serif; font-size: 2.5rem; font-weight: 700; color: var(--fire); letter-spacing: 4px; text-transform: uppercase; }
+  .pw-tagline { font-size: 0.75rem; color: var(--muted); letter-spacing: 3px; text-transform: uppercase; margin-top: -12px; }
+  .pw-box { background: var(--ash); border: 1px solid var(--steel); border-radius: 8px; padding: 28px; width: 300px; display: flex; flex-direction: column; gap: 14px; border-top: 3px solid var(--fire); }
+  .pw-box label { font-family: 'Oswald', sans-serif; font-size: 0.75rem; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
+  .pw-box input { background: var(--smoke); border: 1px solid var(--steel); border-radius: 4px; color: var(--light); font-family: 'Share Tech Mono', monospace; font-size: 1.1rem; padding: 10px 14px; outline: none; width: 100%; letter-spacing: 2px; }
+  .pw-box input:focus { border-color: var(--fire); }
+  .pw-error { color: var(--red); font-size: 0.8rem; font-family: 'Share Tech Mono', monospace; display: none; text-align: center; }
+  .pw-error.show { display: block; }
+  .loading-overlay { position: fixed; inset: 0; background: var(--smoke); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 999; gap: 16px; }
+  .loading-overlay h2 { font-family: 'Oswald', sans-serif; color: var(--fire); letter-spacing: 3px; font-size: 1.4rem; }
+  .loading-overlay p { color: var(--muted); font-size: 0.85rem; }
+  .spinner { width: 40px; height: 40px; border: 3px solid var(--steel); border-top-color: var(--fire); border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  header { background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%); border-bottom: 3px solid var(--fire); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(255,90,0,0.3); }
   header h1 { font-family: 'Oswald', sans-serif; font-size: 1.6rem; font-weight: 700; letter-spacing: 3px; color: var(--fire); text-transform: uppercase; }
   header .subtitle { font-size: 0.7rem; color: var(--muted); letter-spacing: 2px; }
   .live-clock { font-family: 'Share Tech Mono', monospace; font-size: 1.5rem; color: var(--ember); text-align: right; }
@@ -72,7 +80,7 @@
   .check-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; background: #111; border-radius: 4px; margin-bottom: 6px; cursor: pointer; border-left: 3px solid transparent; transition: all 0.15s; }
   .check-item.checked { border-left-color: var(--green); }
   .check-item.checked .check-label { text-decoration: line-through; color: var(--muted); }
-  .custom-check { width: 20px; height: 20px; border: 2px solid var(--steel); border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; transition: all 0.15s; }
+  .custom-check { width: 20px; height: 20px; border: 2px solid var(--steel); border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
   .check-item.checked .custom-check { background: var(--green); border-color: var(--green); }
   .check-label { font-size: 0.9rem; }
   .check-progress { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
@@ -95,141 +103,131 @@
   .temp-log-table th { font-family: 'Oswald', sans-serif; letter-spacing: 1px; font-size: 0.7rem; color: var(--muted); text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--steel); text-transform: uppercase; }
   .temp-log-table td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); font-family: 'Share Tech Mono', monospace; }
   .temp-log-table td:nth-child(2) { color: var(--ember); }
-  /* PASSWORD SCREEN */
-  .password-screen { position: fixed; inset: 0; background: var(--smoke); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; gap: 20px; background-image: repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.015) 40px, rgba(255,255,255,0.015) 41px); }
-  .password-screen .logo { font-family: 'Oswald', sans-serif; font-size: 2.5rem; font-weight: 700; color: var(--fire); letter-spacing: 4px; text-transform: uppercase; }
-  .password-screen .tagline { font-size: 0.75rem; color: var(--muted); letter-spacing: 3px; text-transform: uppercase; margin-top: -12px; }
-  .password-box { background: var(--ash); border: 1px solid var(--steel); border-radius: 8px; padding: 28px; width: 300px; display: flex; flex-direction: column; gap: 14px; border-top: 3px solid var(--fire); }
-  .password-box label { font-family: 'Oswald', sans-serif; font-size: 0.75rem; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
-  .password-box input { background: var(--smoke); border: 1px solid var(--steel); border-radius: 4px; color: var(--light); font-family: 'Share Tech Mono', monospace; font-size: 1.1rem; padding: 10px 14px; outline: none; width: 100%; letter-spacing: 2px; }
-  .password-box input:focus { border-color: var(--fire); }
-  .password-box .error { color: var(--red); font-size: 0.8rem; font-family: 'Share Tech Mono', monospace; display: none; text-align: center; }
-  .password-box .error.show { display: block; }
-  .loading-overlay { position: fixed; inset: 0; background: var(--smoke); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 999; gap: 16px; }
-  .loading-overlay h2 { font-family: 'Oswald', sans-serif; color: var(--fire); letter-spacing: 3px; font-size: 1.4rem; }
-  .loading-overlay p { color: var(--muted); font-size: 0.85rem; }
-  .spinner { width: 40px; height: 40px; border: 3px solid var(--steel); border-top-color: var(--fire); border-radius: 50%; animation: spin 0.8s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
   @media (max-width: 600px) { .meat-grid, .submission-grid { grid-template-columns: 1fr; } header h1 { font-size: 1.1rem; } .live-clock { font-size: 1.1rem; } }
 </style>
 </head>
 <body>
 
+<!-- PASSWORD SCREEN -->
 <div class="password-screen" id="password-screen">
-  <div class="logo">🔥 Pirata BBQ</div>
-  <div class="tagline">Competition Command Center</div>
-  <div class="password-box">
+  <div class="pw-logo">🔥 Pirata BBQ</div>
+  <div class="pw-tagline">Competition Command Center</div>
+  <div class="pw-box">
     <label>Enter Team Password</label>
-    <input type="password" id="pw-input-field" placeholder="••••••••">
+    <input type="password" id="pw-input" placeholder="••••••••">
     <button class="btn" id="pw-btn" style="width:100%;padding:12px;font-size:1rem;letter-spacing:2px;">ENTER</button>
-    <div class="error" id="pw-error">⚠ Incorrect password. Try again.</div>
+    <div class="pw-error" id="pw-error">⚠ Incorrect password. Try again.</div>
   </div>
 </div>
 
-<div class="loading-overlay" id="loading" style="display:none;">
+<!-- LOADING SCREEN -->
+<div class="loading-overlay" id="loading">
   <div class="spinner"></div>
   <h2>🔥 PIRATA BBQ</h2>
   <p>Connecting to Firebase...</p>
 </div>
 
-<header>
-  <div>
-    <h1>🔥 Pirata BBQ</h1>
-    <div class="subtitle">COMPETITION COMMAND CENTER</div>
-  </div>
-  <div style="text-align:right;">
-    <div class="live-clock">
-      <div id="clock">00:00:00</div>
-      <div class="date" id="date-display"></div>
+<!-- MAIN APP -->
+<div id="main-app" style="display:none;">
+  <header>
+    <div>
+      <h1>🔥 Pirata BBQ</h1>
+      <div class="subtitle">COMPETITION COMMAND CENTER</div>
     </div>
-    <div class="sync-status connecting" id="sync-status">⟳ CONNECTING</div>
-  </div>
-</header>
+    <div style="text-align:right;">
+      <div class="live-clock">
+        <div id="clock">00:00:00</div>
+        <div class="date" id="date-display"></div>
+      </div>
+      <div class="sync-status connecting" id="sync-status">⟳ CONNECTING</div>
+    </div>
+  </header>
 
-<div class="tabs">
-  <button class="tab-btn active" onclick="switchTab('tracker',this)">🌡 Temps & Timers</button>
-  <button class="tab-btn" onclick="switchTab('submission',this)">⏱ Submission</button>
-  <button class="tab-btn" onclick="switchTab('checklist',this)">✅ Checklist</button>
-  <button class="tab-btn" onclick="switchTab('recipes',this)">📋 Recipes</button>
-  <button class="tab-btn" onclick="switchTab('log',this)">📓 Cook Log</button>
-</div>
-
-<div class="tab-panel active" id="tab-tracker">
-  <div class="meat-grid" id="meat-grid"></div>
-  <div class="card">
-    <div class="card-title">📊 Temperature Log</div>
-    <table class="temp-log-table">
-      <thead><tr><th>Time</th><th>Temp (°F)</th><th>Meat</th><th>Logged By</th></tr></thead>
-      <tbody id="temp-log-body"><tr><td colspan="4" style="color:var(--muted);padding:12px 10px;">No temps logged yet.</td></tr></tbody>
-    </table>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('tracker',this)">🌡 Temps & Timers</button>
+    <button class="tab-btn" onclick="switchTab('submission',this)">⏱ Submission</button>
+    <button class="tab-btn" onclick="switchTab('checklist',this)">✅ Checklist</button>
+    <button class="tab-btn" onclick="switchTab('recipes',this)">📋 Recipes</button>
+    <button class="tab-btn" onclick="switchTab('log',this)">📓 Cook Log</button>
   </div>
-</div>
 
-<div class="tab-panel" id="tab-submission">
-  <div class="card">
-    <div class="card-title">⏱ Turn-In Countdowns</div>
-    <div class="submission-grid" id="sub-grid"></div>
-  </div>
-  <div class="card">
-    <div class="card-title">📋 Turn-In Order (KCBS Standard)</div>
-    <div style="font-size:0.85rem;color:var(--muted);line-height:2;">
-      <div>🐔 <strong style="color:var(--light)">Chicken</strong> — 12:00 PM</div>
-      <div>🐖 <strong style="color:var(--light)">Spareribs</strong> — 12:30 PM</div>
-      <div>🍖 <strong style="color:var(--light)">Pork Butt</strong> — 1:00 PM</div>
-      <div>🥩 <strong style="color:var(--light)">Brisket</strong> — 1:30 PM</div>
-      <div style="margin-top:10px;font-size:0.75rem;">* Edit your actual times above.</div>
+  <div class="tab-panel active" id="tab-tracker">
+    <div class="meat-grid" id="meat-grid"></div>
+    <div class="card">
+      <div class="card-title">📊 Temperature Log</div>
+      <table class="temp-log-table">
+        <thead><tr><th>Time</th><th>Temp (°F)</th><th>Meat</th><th>Logged By</th></tr></thead>
+        <tbody id="temp-log-body"><tr><td colspan="4" style="color:var(--muted);padding:12px 10px;">No temps logged yet.</td></tr></tbody>
+      </table>
     </div>
   </div>
-</div>
 
-<div class="tab-panel" id="tab-checklist">
-  <div id="checklist-container"></div>
-</div>
-
-<div class="tab-panel" id="tab-recipes">
-  <div id="recipe-container"></div>
-</div>
-
-<div class="tab-panel" id="tab-log">
-  <div class="card">
-    <div class="card-title">📝 Cook Log</div>
-    <div style="display:flex;gap:10px;margin-bottom:14px;">
-      <input id="log-input" type="text" placeholder="Add a note..." style="flex:1;background:var(--smoke);border:1px solid var(--steel);border-radius:4px;color:var(--light);font-family:'Barlow',sans-serif;font-size:0.9rem;padding:10px 12px;outline:none;">
-      <button class="btn" onclick="addLog()">ADD</button>
+  <div class="tab-panel" id="tab-submission">
+    <div class="card">
+      <div class="card-title">⏱ Turn-In Countdowns</div>
+      <div class="submission-grid" id="sub-grid"></div>
     </div>
-    <div id="log-entries"><div style="color:var(--muted);font-size:0.85rem;">No entries yet.</div></div>
+    <div class="card">
+      <div class="card-title">📋 Turn-In Order (KCBS Standard)</div>
+      <div style="font-size:0.85rem;color:var(--muted);line-height:2;">
+        <div>🐔 <strong style="color:var(--light)">Chicken</strong> — 12:00 PM</div>
+        <div>🐖 <strong style="color:var(--light)">Spareribs</strong> — 12:30 PM</div>
+        <div>🍖 <strong style="color:var(--light)">Pork Butt</strong> — 1:00 PM</div>
+        <div>🥩 <strong style="color:var(--light)">Brisket</strong> — 1:30 PM</div>
+        <div style="margin-top:10px;font-size:0.75rem;">* Edit your actual times above.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="tab-checklist">
+    <div id="checklist-container"></div>
+  </div>
+
+  <div class="tab-panel" id="tab-recipes">
+    <div id="recipe-container"></div>
+  </div>
+
+  <div class="tab-panel" id="tab-log">
+    <div class="card">
+      <div class="card-title">📝 Cook Log</div>
+      <div style="display:flex;gap:10px;margin-bottom:14px;">
+        <input id="log-input" type="text" placeholder="Add a note..." style="flex:1;background:var(--smoke);border:1px solid var(--steel);border-radius:4px;color:var(--light);font-family:'Barlow',sans-serif;font-size:0.9rem;padding:10px 12px;outline:none;">
+        <button class="btn" onclick="addLog()">ADD</button>
+      </div>
+      <div id="log-entries"><div style="color:var(--muted);font-size:0.85rem;">No entries yet.</div></div>
+    </div>
   </div>
 </div>
 
-<!-- Firebase SDKs -->
+<!-- PASSWORD HANDLER (plain script, not module) -->
 <script>
-// Password gate runs before Firebase module loads
-document.addEventListener("DOMContentLoaded", function() {
-  const pwBtn = document.getElementById("pw-btn");
-  const pwInput = document.getElementById("pw-input-field");
-  const pwError = document.getElementById("pw-error");
-  const pwScreen = document.getElementById("password-screen");
-  const loading = document.getElementById("loading");
+  var _fbReady = false;
 
-  function checkPassword() {
-    if (pwInput.value === "DR+Austin") {
-      pwScreen.style.display = "none";
-      loading.style.display = "flex";
-      window._appUnlocked = true;
-      document.dispatchEvent(new Event("appUnlocked"));
+  document.getElementById('pw-btn').addEventListener('click', checkPw);
+  document.getElementById('pw-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') checkPw();
+  });
+  document.getElementById('pw-input').focus();
+
+  function checkPw() {
+    var val = document.getElementById('pw-input').value;
+    if (val === 'DR+Austin') {
+      document.getElementById('password-screen').style.display = 'none';
+      document.getElementById('loading').style.display = 'flex';
+      if (window._startFirebase) {
+        window._startFirebase();
+      } else {
+        window._pwUnlocked = true;
+      }
     } else {
-      pwError.classList.add("show");
-      pwInput.value = "";
-      pwInput.focus();
+      document.getElementById('pw-error').classList.add('show');
+      document.getElementById('pw-input').value = '';
+      document.getElementById('pw-input').focus();
     }
   }
-
-  pwBtn.addEventListener("click", checkPassword);
-  pwInput.addEventListener("keydown", e => { if (e.key === "Enter") checkPassword(); });
-  pwInput.focus();
-});
 </script>
 
+<!-- FIREBASE MODULE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, set, onValue, push, update } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
@@ -249,7 +247,6 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
 
-// ─── DATA ────────────────────────────────────────────────────────────
 const MEATS = [
   { id:'chicken', name:'🐔 Chicken', targetTemp: 165 },
   { id:'ribs',    name:'🐖 Spareribs', targetTemp: 203 },
@@ -272,38 +269,54 @@ const RECIPES = [
   { name:'🍯 Chicken BBQ Sauce', rubs:'', ingredients:[['1 bottle','Head Country Original'],['½ bottle',"Stubb's Spicy"],['¼ cup','Honey']] },
 ];
 
-// ─── STATE ────────────────────────────────────────────────────────────
-let timers = {};
-let checkState = {};
-let subTimes = { 0:'12:00', 1:'12:30', 2:'13:00', 3:'13:30' };
-let tempLogData = [];
-let logData = [];
-let userId = 'User';
-
-// ─── AUTH ─────────────────────────────────────────────────────────────
-// Wait for password unlock before starting app
-document.addEventListener("appUnlocked", startApp);
-
+let timers = {}, checkState = {}, subTimes = {0:'12:00',1:'12:30',2:'13:00',3:'13:30'};
+let tempLogData = [], logData = [], userId = 'User';
 
 function startApp() {
-signInAnonymously(auth).then(cred => {
-  userId = 'Pit' + cred.user.uid.substring(0,4).toUpperCase();
-  document.getElementById('loading').style.display = 'none';
-  document.getElementById('sync-status').textContent = '● LIVE';
-  document.getElementById('sync-status').className = 'sync-status connected';
-  initListeners();
-}).catch(err => {
-  console.error(err);
-  document.getElementById('loading').style.display = 'none';
-  document.getElementById('sync-status').textContent = '✕ OFFLINE';
-  document.getElementById('sync-status').className = 'sync-status disconnected';
-  initLocal();
-});
+  signInAnonymously(auth).then(cred => {
+    userId = 'Pit' + cred.user.uid.substring(0,4).toUpperCase();
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('main-app').style.display = 'block';
+    document.getElementById('sync-status').textContent = '● LIVE';
+    document.getElementById('sync-status').className = 'sync-status connected';
+    buildApp();
+    initListeners();
+  }).catch(err => {
+    console.error('Firebase error:', err);
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('main-app').style.display = 'block';
+    document.getElementById('sync-status').textContent = '✕ OFFLINE';
+    document.getElementById('sync-status').className = 'sync-status disconnected';
+    buildApp();
+  });
+}
 
-// ─── FIREBASE LISTENERS ───────────────────────────────────────────────
+// Bridge between plain script and module
+window._startFirebase = startApp;
+if (window._pwUnlocked) startApp();
+
+function buildApp() {
+  buildMeatGrid();
+  buildSubmissionGrid();
+  buildChecklist();
+  buildRecipes();
+  const tick = () => {
+    const now = new Date();
+    document.getElementById('clock').textContent = now.toLocaleTimeString('en-US',{hour12:false});
+    document.getElementById('date-display').textContent = now.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+  };
+  setInterval(tick, 1000); tick();
+}
+
+window.switchTab = function(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+};
+
 function initListeners() {
-  // Meat temps & status
-  onValue(ref(db, 'meats'), snap => {
+  onValue(ref(db,'meats'), snap => {
     const data = snap.val() || {};
     MEATS.forEach(meat => {
       const d = data[meat.id] || {};
@@ -313,77 +326,30 @@ function initListeners() {
       if (pitEl && d.pitTemp !== undefined) pitEl.value = d.pitTemp;
       if (meatEl && d.meatTemp !== undefined) meatEl.value = d.meatTemp;
       if (badge) {
-        if (d.status === 'done') { badge.textContent='DONE ✓'; badge.className='status-badge done'; }
-        else if (d.status === 'cooking') { badge.textContent='COOKING'; badge.className='status-badge active'; }
-        else { badge.textContent='IDLE'; badge.className='status-badge'; }
+        if (d.status==='done'){badge.textContent='DONE ✓';badge.className='status-badge done';}
+        else if(d.status==='cooking'){badge.textContent='COOKING';badge.className='status-badge active';}
+        else{badge.textContent='IDLE';badge.className='status-badge';}
       }
     });
   });
-
-  // Checklist
-  onValue(ref(db, 'checklist'), snap => {
-    checkState = snap.val() || {};
-    buildChecklist();
-  });
-
-  // Submission times
-  onValue(ref(db, 'subTimes'), snap => {
+  onValue(ref(db,'checklist'), snap => { checkState = snap.val() || {}; buildChecklist(); });
+  onValue(ref(db,'subTimes'), snap => {
     const d = snap.val();
-    if (d) {
-      subTimes = d;
-      Object.keys(d).forEach(i => {
-        const el = document.getElementById('sub-time-'+i);
-        if (el) el.value = d[i];
-      });
-    }
+    if (d) { subTimes=d; Object.keys(d).forEach(i=>{const el=document.getElementById('sub-time-'+i);if(el)el.value=d[i];}); }
   });
-
-  // Temp log
-  onValue(ref(db, 'tempLog'), snap => {
-    const d = snap.val() || {};
-    tempLogData = Object.values(d).sort((a,b) => b.ts - a.ts);
-    renderTempLog();
+  onValue(ref(db,'tempLog'), snap => {
+    tempLogData = Object.values(snap.val()||{}).sort((a,b)=>b.ts-a.ts); renderTempLog();
   });
-
-  // Cook log
-  onValue(ref(db, 'cookLog'), snap => {
-    const d = snap.val() || {};
-    logData = Object.values(d).sort((a,b) => b.ts - a.ts);
-    renderLog();
+  onValue(ref(db,'cookLog'), snap => {
+    logData = Object.values(snap.val()||{}).sort((a,b)=>b.ts-a.ts); renderLog();
   });
 }
 
-function initLocal() {
-  buildChecklist();
-  buildSubmissionGrid();
-}
-
-// ─── CLOCK ────────────────────────────────────────────────────────────
-function updateClock() {
-  const now = new Date();
-  document.getElementById('clock').textContent = now.toLocaleTimeString('en-US',{hour12:false});
-  document.getElementById('date-display').textContent = now.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
-}
-setInterval(updateClock, 1000); updateClock();
-
-// ─── TABS ─────────────────────────────────────────────────────────────
-window.switchTab = function(id, btn) {
-  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('tab-'+id).classList.add('active');
-  btn.classList.add('active');
-}
-
-// ─── MEAT TRACKER ─────────────────────────────────────────────────────
 function buildMeatGrid() {
-  const grid = document.getElementById('meat-grid');
-  grid.innerHTML = '';
+  const grid = document.getElementById('meat-grid'); grid.innerHTML='';
   MEATS.forEach(meat => {
-    const div = document.createElement('div');
-    div.className = 'meat-card';
-    div.innerHTML = `
-      <h3>${meat.name}</h3>
-      <span class="status-badge" id="badge-${meat.id}">IDLE</span>
+    const div = document.createElement('div'); div.className='meat-card';
+    div.innerHTML=`<h3>${meat.name}</h3><span class="status-badge" id="badge-${meat.id}">IDLE</span>
       <div class="temp-row">
         <div class="temp-input-wrap"><label>Pit Temp °F</label><input class="temp-input" type="number" id="pit-${meat.id}" placeholder="225" onchange="savePitTemp('${meat.id}',this.value)"></div>
         <div class="temp-input-wrap"><label>Meat Temp °F</label><input class="temp-input" type="number" id="meat-${meat.id}" placeholder="${meat.targetTemp}" onchange="saveMeatTemp('${meat.id}',this.value)"></div>
@@ -393,165 +359,94 @@ function buildMeatGrid() {
         <button class="btn" id="tbtn-${meat.id}" onclick="toggleTimer('${meat.id}')">START</button>
         <button class="btn secondary" onclick="resetTimer('${meat.id}')">↺</button>
       </div>
-      <textarea class="notes-input" placeholder="Notes..." onchange="saveNote('${meat.id}',this.value)"></textarea>
-    `;
+      <textarea class="notes-input" placeholder="Notes..." onchange="saveNote('${meat.id}',this.value)"></textarea>`;
     grid.appendChild(div);
-    timers[meat.id] = { running:false, seconds:0, interval:null };
+    timers[meat.id]={running:false,seconds:0,interval:null};
   });
 }
 
-window.savePitTemp = function(id, val) {
-  update(ref(db, 'meats/'+id), { pitTemp: val });
+window.savePitTemp = function(id,val){ update(ref(db,'meats/'+id),{pitTemp:val}); };
+window.saveMeatTemp = function(id,val){
+  const meat=MEATS.find(m=>m.id===id);
+  const status=parseInt(val)>=meat.targetTemp?'done':'cooking';
+  update(ref(db,'meats/'+id),{meatTemp:val,status});
+  push(ref(db,'tempLog'),{time:new Date().toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit'}),temp:val,meat:meat.name.replace(/^[^\s]+\s/,''),by:userId,ts:Date.now()});
+  if(status==='done') pushLog(meat.name+' hit target '+meat.targetTemp+'°F! 🎉');
 };
-
-window.saveMeatTemp = function(id, val) {
-  const meat = MEATS.find(m=>m.id===id);
-  const status = parseInt(val) >= meat.targetTemp ? 'done' : 'cooking';
-  update(ref(db, 'meats/'+id), { meatTemp: val, status });
-  // Log the temp
-  push(ref(db, 'tempLog'), {
-    time: new Date().toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit'}),
-    temp: val, meat: meat.name.replace(/^[^\s]+\s/,''),
-    by: userId, ts: Date.now()
-  });
-  if (status === 'done') {
-    pushLog(`${meat.name} hit target ${meat.targetTemp}°F! 🎉`);
-  }
+window.saveNote = function(id,val){ if(val) pushLog(MEATS.find(m=>m.id===id).name+': '+val); };
+window.toggleTimer = function(id){
+  const t=timers[id],btn=document.getElementById('tbtn-'+id),disp=document.getElementById('timer-'+id);
+  if(!t.running){t.running=true;btn.textContent='PAUSE';disp.classList.add('running');update(ref(db,'meats/'+id),{status:'cooking'});t.interval=setInterval(()=>{t.seconds++;disp.textContent=fmt(t.seconds);},1000);pushLog(MEATS.find(m=>m.id===id).name+' — timer started by '+userId);}
+  else{t.running=false;btn.textContent='RESUME';disp.classList.remove('running');clearInterval(t.interval);}
 };
-
-window.saveNote = function(id, val) {
-  if (val) pushLog(`${MEATS.find(m=>m.id===id).name}: ${val}`);
-};
-
-window.toggleTimer = function(id) {
-  const t = timers[id];
-  const btn = document.getElementById('tbtn-'+id);
-  const disp = document.getElementById('timer-'+id);
-  if (!t.running) {
-    t.running=true; btn.textContent='PAUSE'; disp.classList.add('running');
-    update(ref(db,'meats/'+id),{status:'cooking'});
-    t.interval = setInterval(()=>{ t.seconds++; disp.textContent=formatTime(t.seconds); },1000);
-    pushLog(MEATS.find(m=>m.id===id).name+' — timer started by '+userId);
-  } else {
-    t.running=false; btn.textContent='RESUME'; disp.classList.remove('running'); clearInterval(t.interval);
-  }
-};
-
-window.resetTimer = function(id) {
-  const t = timers[id]; clearInterval(t.interval);
-  t.running=false; t.seconds=0;
+window.resetTimer = function(id){
+  const t=timers[id];clearInterval(t.interval);t.running=false;t.seconds=0;
   document.getElementById('timer-'+id).textContent='00:00:00';
   document.getElementById('timer-'+id).classList.remove('running');
   document.getElementById('tbtn-'+id).textContent='START';
   update(ref(db,'meats/'+id),{status:'idle'});
 };
-
-function renderTempLog() {
-  const tbody = document.getElementById('temp-log-body');
-  if (!tempLogData.length) { tbody.innerHTML='<tr><td colspan="4" style="color:var(--muted);padding:12px 10px;">No temps logged yet.</td></tr>'; return; }
-  tbody.innerHTML = tempLogData.slice(0,20).map(e=>`<tr><td>${e.time}</td><td>${e.temp}°F</td><td>${e.meat}</td><td style="color:var(--muted)">${e.by||''}</td></tr>`).join('');
+function renderTempLog(){
+  const tbody=document.getElementById('temp-log-body');
+  if(!tempLogData.length){tbody.innerHTML='<tr><td colspan="4" style="color:var(--muted);padding:12px 10px;">No temps logged yet.</td></tr>';return;}
+  tbody.innerHTML=tempLogData.slice(0,20).map(e=>`<tr><td>${e.time}</td><td>${e.temp}°F</td><td>${e.meat}</td><td style="color:var(--muted)">${e.by||''}</td></tr>`).join('');
 }
+function fmt(s){return[Math.floor(s/3600),Math.floor((s%3600)/60),s%60].map(n=>String(n).padStart(2,'0')).join(':');}
 
-function formatTime(s) {
-  return [Math.floor(s/3600),Math.floor((s%3600)/60),s%60].map(n=>String(n).padStart(2,'0')).join(':');
-}
-
-// ─── SUBMISSION ───────────────────────────────────────────────────────
-const SUB_MEATS = ['Chicken','Spareribs','Pork Butt','Brisket'];
-
-function buildSubmissionGrid() {
-  const grid = document.getElementById('sub-grid');
-  grid.innerHTML='';
+const SUB_MEATS=['Chicken','Spareribs','Pork Butt','Brisket'];
+function buildSubmissionGrid(){
+  const grid=document.getElementById('sub-grid');grid.innerHTML='';
   SUB_MEATS.forEach((name,i)=>{
-    const div=document.createElement('div'); div.className='sub-card';
-    div.innerHTML=`<h3>${name}</h3><div class="countdown-display" id="cd-${i}">--:--</div>
-      <div class="time-set"><input type="time" id="sub-time-${i}" value="${subTimes[i]||'12:00'}" onchange="saveSubTime(${i},this.value)"></div>`;
+    const div=document.createElement('div');div.className='sub-card';
+    div.innerHTML=`<h3>${name}</h3><div class="countdown-display" id="cd-${i}">--:--</div><div class="time-set"><input type="time" id="sub-time-${i}" value="${subTimes[i]||'12:00'}" onchange="saveSubTime(${i},this.value)"></div>`;
     grid.appendChild(div);
   });
-  setInterval(updateAllSubTimers,1000); updateAllSubTimers();
+  setInterval(updateCountdowns,1000);updateCountdowns();
 }
-
-window.saveSubTime = function(i, val) {
-  subTimes[i] = val;
-  set(ref(db,'subTimes'), subTimes);
-};
-
-function updateAllSubTimers() {
+window.saveSubTime=function(i,val){subTimes[i]=val;set(ref(db,'subTimes'),subTimes);};
+function updateCountdowns(){
   const now=new Date();
   SUB_MEATS.forEach((_,i)=>{
-    const inp=document.getElementById('sub-time-'+i); if(!inp) return;
-    const [h,m]=inp.value.split(':').map(Number);
-    const target=new Date(); target.setHours(h,m,0,0);
+    const inp=document.getElementById('sub-time-'+i);if(!inp)return;
+    const[h,m]=inp.value.split(':').map(Number);
+    const target=new Date();target.setHours(h,m,0,0);
     const diff=Math.floor((target-now)/1000);
-    const disp=document.getElementById('cd-'+i); if(!disp) return;
+    const disp=document.getElementById('cd-'+i);if(!disp)return;
     if(diff<0){disp.textContent='SUBMITTED';disp.className='countdown-display ok';}
     else{const mm=String(Math.floor(diff/60)).padStart(2,'0'),ss=String(diff%60).padStart(2,'0');disp.textContent=`${mm}m ${ss}s`;disp.className=diff<300?'countdown-display urgent':'countdown-display';}
   });
 }
 
-// ─── CHECKLIST ────────────────────────────────────────────────────────
-function buildChecklist() {
-  const container=document.getElementById('checklist-container'); container.innerHTML='';
+function buildChecklist(){
+  const container=document.getElementById('checklist-container');container.innerHTML='';
   Object.entries(CHECKLISTS).forEach(([section,items])=>{
     const checked=items.filter((_,i)=>checkState[section+'_'+i]).length;
-    const div=document.createElement('div'); div.className='checklist-section';
-    div.innerHTML=`<h3>${section}</h3>
-      <div class="check-progress"><div class="progress-bar"><div class="progress-fill" style="width:${(checked/items.length)*100}%"></div></div><div class="progress-label">${checked}/${items.length}</div></div>
-      ${items.map((item,i)=>`<div class="check-item ${checkState[section+'_'+i]?'checked':''}" onclick="toggleCheck('${section}',${i})">
-        <div class="custom-check">${checkState[section+'_'+i]?'✓':''}</div>
-        <div class="check-label">${item}</div></div>`).join('')}`;
+    const div=document.createElement('div');div.className='checklist-section';
+    div.innerHTML=`<h3>${section}</h3><div class="check-progress"><div class="progress-bar"><div class="progress-fill" style="width:${(checked/items.length)*100}%"></div></div><div class="progress-label">${checked}/${items.length}</div></div>${items.map((item,i)=>`<div class="check-item ${checkState[section+'_'+i]?'checked':''}" onclick="toggleCheck('${section}',${i})"><div class="custom-check">${checkState[section+'_'+i]?'✓':''}</div><div class="check-label">${item}</div></div>`).join('')}`;
     container.appendChild(div);
   });
 }
-
-window.toggleCheck = function(section, i) {
-  const key = section+'_'+i;
-  checkState[key] = !checkState[key];
-  set(ref(db,'checklist'), checkState);
-  if (checkState[key]) pushLog('✓ '+CHECKLISTS[section][i]+' ('+userId+')');
+window.toggleCheck=function(section,i){
+  const key=section+'_'+i;checkState[key]=!checkState[key];
+  set(ref(db,'checklist'),checkState);
+  if(checkState[key]) pushLog('✓ '+CHECKLISTS[section][i]+' ('+userId+')');
 };
 
-// ─── RECIPES ──────────────────────────────────────────────────────────
-function buildRecipes() {
-  document.getElementById('recipe-container').innerHTML=RECIPES.map((r,i)=>`
-    <div class="recipe-section">
-      <div class="recipe-header" onclick="toggleRecipe(${i},this)">${r.name}<span class="arrow">▼</span></div>
-      <div class="recipe-body" id="rb-${i}">
-        ${r.rubs?`<div class="recipe-col"><h4>Rubs</h4><div style="color:var(--ember);font-size:0.85rem;margin-bottom:10px;">${r.rubs}</div></div>`:''}
-        <div class="recipe-col"><h4>Ingredients</h4><ul class="ingredient-list">${r.ingredients.map(([a,n])=>`<li><span class="amt">${a}</span>${n}</li>`).join('')}</ul></div>
-      </div></div>`).join('');
+function buildRecipes(){
+  document.getElementById('recipe-container').innerHTML=RECIPES.map((r,i)=>`<div class="recipe-section"><div class="recipe-header" onclick="toggleRecipe(${i},this)">${r.name}<span class="arrow">▼</span></div><div class="recipe-body" id="rb-${i}">${r.rubs?`<div class="recipe-col"><h4>Rubs</h4><div style="color:var(--ember);font-size:0.85rem;margin-bottom:10px;">${r.rubs}</div></div>`:''}<div class="recipe-col"><h4>Ingredients</h4><ul class="ingredient-list">${r.ingredients.map(([a,n])=>`<li><span class="amt">${a}</span>${n}</li>`).join('')}</ul></div></div></div>`).join('');
 }
+window.toggleRecipe=function(i,header){document.getElementById('rb-'+i).classList.toggle('open');header.classList.toggle('open');};
 
-window.toggleRecipe = function(i, header) {
-  document.getElementById('rb-'+i).classList.toggle('open');
-  header.classList.toggle('open');
+window.addLog=function(){
+  const inp=document.getElementById('log-input');const msg=inp.value.trim();if(!msg)return;
+  inp.value='';pushLog(msg+' ('+userId+')');
 };
-
-// ─── LOG ──────────────────────────────────────────────────────────────
-window.addLog = function() {
-  const inp=document.getElementById('log-input');
-  const msg=inp.value.trim(); if(!msg) return;
-  inp.value=''; pushLog(msg+' ('+userId+')');
-};
-
-function pushLog(msg) {
-  push(ref(db,'cookLog'),{
-    time: new Date().toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit'}),
-    msg, ts: Date.now()
-  });
-}
-
+function pushLog(msg){push(ref(db,'cookLog'),{time:new Date().toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit'}),msg,ts:Date.now()});}
 document.getElementById('log-input').addEventListener('keydown',e=>{if(e.key==='Enter')window.addLog();});
-
-function renderLog() {
+function renderLog(){
   const c=document.getElementById('log-entries');
   c.innerHTML=logData.length?logData.slice(0,50).map(e=>`<div class="log-entry"><span class="log-time">${e.time}</span><span>${e.msg}</span></div>`).join(''):'<div style="color:var(--muted);font-size:0.85rem;">No entries yet.</div>';
 }
-
-// ─── INIT ─────────────────────────────────────────────────────────────
-buildMeatGrid();
-buildSubmissionGrid();
-buildRecipes();
 </script>
 </body>
 </html>
