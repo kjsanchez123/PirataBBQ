@@ -95,6 +95,16 @@
   .temp-log-table th { font-family: 'Oswald', sans-serif; letter-spacing: 1px; font-size: 0.7rem; color: var(--muted); text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--steel); text-transform: uppercase; }
   .temp-log-table td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); font-family: 'Share Tech Mono', monospace; }
   .temp-log-table td:nth-child(2) { color: var(--ember); }
+  /* PASSWORD SCREEN */
+  .password-screen { position: fixed; inset: 0; background: var(--smoke); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; gap: 20px; background-image: repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.015) 40px, rgba(255,255,255,0.015) 41px); }
+  .password-screen .logo { font-family: 'Oswald', sans-serif; font-size: 2.5rem; font-weight: 700; color: var(--fire); letter-spacing: 4px; text-transform: uppercase; }
+  .password-screen .tagline { font-size: 0.75rem; color: var(--muted); letter-spacing: 3px; text-transform: uppercase; margin-top: -12px; }
+  .password-box { background: var(--ash); border: 1px solid var(--steel); border-radius: 8px; padding: 28px; width: 300px; display: flex; flex-direction: column; gap: 14px; border-top: 3px solid var(--fire); }
+  .password-box label { font-family: 'Oswald', sans-serif; font-size: 0.75rem; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
+  .password-box input { background: var(--smoke); border: 1px solid var(--steel); border-radius: 4px; color: var(--light); font-family: 'Share Tech Mono', monospace; font-size: 1.1rem; padding: 10px 14px; outline: none; width: 100%; letter-spacing: 2px; }
+  .password-box input:focus { border-color: var(--fire); }
+  .password-box .error { color: var(--red); font-size: 0.8rem; font-family: 'Share Tech Mono', monospace; display: none; text-align: center; }
+  .password-box .error.show { display: block; }
   .loading-overlay { position: fixed; inset: 0; background: var(--smoke); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 999; gap: 16px; }
   .loading-overlay h2 { font-family: 'Oswald', sans-serif; color: var(--fire); letter-spacing: 3px; font-size: 1.4rem; }
   .loading-overlay p { color: var(--muted); font-size: 0.85rem; }
@@ -105,7 +115,18 @@
 </head>
 <body>
 
-<div class="loading-overlay" id="loading">
+<div class="password-screen" id="password-screen">
+  <div class="logo">🔥 Pirata BBQ</div>
+  <div class="tagline">Competition Command Center</div>
+  <div class="password-box">
+    <label>Enter Team Password</label>
+    <input type="password" id="pw-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkPassword()">
+    <button class="btn" onclick="checkPassword()" style="width:100%;padding:12px;font-size:1rem;letter-spacing:2px;">ENTER</button>
+    <div class="error" id="pw-error">⚠ Incorrect password. Try again.</div>
+  </div>
+</div>
+
+<div class="loading-overlay" id="loading" style="display:none;">
   <div class="spinner"></div>
   <h2>🔥 PIRATA BBQ</h2>
   <p>Connecting to Firebase...</p>
@@ -232,6 +253,21 @@ let logData = [];
 let userId = 'User';
 
 // ─── AUTH ─────────────────────────────────────────────────────────────
+// Password check function
+window.checkPassword = function() {
+  const val = document.getElementById("pw-input").value;
+  if (val === "DR+Austin") {
+    document.getElementById("password-screen").style.display = "none";
+    document.getElementById("loading").style.display = "flex";
+    startApp();
+  } else {
+    document.getElementById("pw-error").classList.add("show");
+    document.getElementById("pw-input").value = "";
+    document.getElementById("pw-input").focus();
+  }
+};
+
+function startApp() {
 signInAnonymously(auth).then(cred => {
   userId = 'Pit' + cred.user.uid.substring(0,4).toUpperCase();
   document.getElementById('loading').style.display = 'none';
