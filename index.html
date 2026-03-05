@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Pirata BBQ — Competition Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Share+Tech+Mono&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --fire: #FF5A00;
+    --ember: #FF8C00;
+    --smoke: #1a1a1a;
+    --ash: #2c2c2c;
+    --steel: #3a3a3a;
+    --light: #f0ebe3;
+    --muted: #8a8078;
+    --green: #4caf50;
+    --red: #e53935;
+    --yellow: #FFC107;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--smoke);
+    color: var(--light);
+    font-family: 'Barlow', sans-serif;
+    min-height: 100vh;
+    background-image: repeating-linear-gradient(
+      0deg, transparent, transparent 40px, rgba(255,255,255,0.015) 40px, rgba(255,255,255,0.015) 41px
+    );
+  }
+  header {
+    background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%);
+    border-bottom: 3px solid var(--fire);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 4px 20px rgba(255,90,0,0.3);
+  }
+  header h1 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--fire);
+    text-transform: uppercase;
+  }
+  header .subtitle { font-size: 0.7rem; color: var(--muted); letter-spacing: 2px; }
+  .live-clock {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.5rem;
+    color: var(--ember);
+    text-align: right;
+  }
+  .live-clock .date { font-size: 0.65rem; color: var(--muted); letter-spacing: 1px; }
+  .tabs {
+    display: flex;
+    background: #111;
+    border-bottom: 2px solid var(--steel);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tab-btn {
+    font-family: 'Oswald', sans-serif;
+    letter-spacing: 1.5px;
+    font-size: 0.85rem;
+    padding: 14px 24px;
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+    text-transform: uppercase;
+  }
+  .tab-btn.active { color: var(--fire); border-bottom-color: var(--fire); }
+  .tab-btn:hover:not(.active) { color: var(--light); }
+  .tab-panel { display: none; padding: 20px; }
+  .tab-panel.active { display: block; }
+  .card {
+    background: var(--ash);
+    border: 1px solid var(--steel);
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    color: var(--ember);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .meat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .meat-card {
+    background: #111;
+    border: 1px solid var(--steel);
+    border-radius: 8px;
+    padding: 16px;
+    border-top: 3px solid var(--fire);
+    position: relative;
+  }
+  .meat-card h3 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    color: var(--light);
+    margin-bottom: 12px;
+  }
+  .meat-card .status-badge {
+    position: absolute;
+    top: 12px; right: 12px;
+    font-size: 0.65rem;
+    font-family: 'Share Tech Mono', monospace;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: var(--steel);
+    color: var(--muted);
+  }
+  .meat-card .status-badge.active { background: rgba(76,175,80,0.2); color: var(--green); }
+  .meat-card .status-badge.done { background: rgba(255,90,0,0.2); color: var(--fire); }
+  .temp-row { display: flex; gap: 10px; margin-bottom: 10px; }
+  .temp-input-wrap { flex: 1; }
+  .temp-input-wrap label { font-size: 0.65rem; color: var(--muted); letter-spacing: 1px; display: block; margin-bottom: 4px; text-transform: uppercase; }
+  .temp-input {
+    width: 100%;
+    background: var(--smoke);
+    border: 1px solid var(--steel);
+    border-radius: 4px;
+    color: var(--ember);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.3rem;
+    padding: 8px 10px;
+    text-align: center;
+    outline: none;
+  }
+  .temp-input:focus { border-color: var(--fire); }
+  .timer-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+  .timer-display {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.6rem;
+    color: var(--light);
+    background: var(--smoke);
+    border-radius: 4px;
+    padding: 6px 12px;
+    flex: 1;
+    text-align: center;
+    border: 1px solid var(--steel);
+  }
+  .timer-display.running { color: var(--green); border-color: var(--green); }
+  .btn {
+    background: var(--fire);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 14px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: background 0.2s;
+    text-transform: uppercase;
+  }
+  .btn:hover { background: var(--ember); }
+  .btn.secondary { background: var(--steel); }
+  .notes-input {
+    width: 100%;
+    background: var(--smoke);
+    border: 1px solid var(--steel);
+    border-radius: 4px;
+    color: var(--light);
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.85rem;
+    padding: 8px;
+    margin-top: 8px;
+    resize: none;
+    outline: none;
+    height: 52px;
+  }
+  .submission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .sub-card {
+    background: #111;
+    border: 1px solid var(--steel);
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+  }
+  .sub-card h3 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .countdown-display {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 2rem;
+    color: var(--ember);
+    margin: 8px 0;
+    min-height: 2.5rem;
+  }
+  .countdown-display.urgent { color: var(--red); animation: pulse 1s infinite; }
+  .countdown-display.ok { color: var(--green); }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+  .time-set { display: flex; gap: 6px; margin-top: 8px; align-items: center; justify-content: center; }
+  .time-set input {
+    background: var(--smoke);
+    border: 1px solid var(--steel);
+    border-radius: 4px;
+    color: var(--light);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1rem;
+    padding: 6px 8px;
+    width: 90px;
+    outline: none;
+    text-align: center;
+  }
+  .checklist-section { margin-bottom: 20px; }
+  .checklist-section h3 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    color: var(--ember);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--steel);
+  }
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    background: #111;
+    border-radius: 4px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+  }
+  .check-item.checked { border-left-color: var(--green); }
+  .check-item.checked .check-label { text-decoration: line-through; color: var(--muted); }
+  .custom-check {
+    width: 20px; height: 20px;
+    border: 2px solid var(--steel);
+    border-radius: 4px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+  }
+  .check-item.checked .custom-check { background: var(--green); border-color: var(--green); }
+  .check-label { font-size: 0.9rem; }
+  .check-progress { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .progress-bar { flex: 1; height: 4px; background: var(--steel); border-radius: 2px; }
+  .progress-fill { height: 100%; background: var(--fire); border-radius: 2px; transition: width 0.3s; }
+  .progress-label { font-size: 0.75rem; color: var(--muted); font-family: 'Share Tech Mono', monospace; min-width: 40px; text-align: right; }
+  .recipe-section { margin-bottom: 20px; }
+  .recipe-header {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    color: var(--light);
+    text-transform: uppercase;
+    padding: 12px 14px;
+    background: #111;
+    border-radius: 6px 6px 0 0;
+    border: 1px solid var(--steel);
+    border-bottom: 2px solid var(--fire);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .recipe-header .arrow { transition: transform 0.2s; }
+  .recipe-header.open .arrow { transform: rotate(180deg); }
+  .recipe-body {
+    display: none;
+    background: #0d0d0d;
+    border: 1px solid var(--steel);
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    padding: 14px;
+  }
+  .recipe-body.open { display: block; }
+  .recipe-col h4 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    color: var(--fire);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .ingredient-list { list-style: none; }
+  .ingredient-list li {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--light);
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    display: flex;
+    gap: 8px;
+  }
+  .ingredient-list li .amt { color: var(--ember); min-width: 80px; }
+  .log-entry { display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.8rem; }
+  .log-time { font-family: 'Share Tech Mono', monospace; color: var(--muted); min-width: 55px; }
+  .temp-log-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+  .temp-log-table th {
+    font-family: 'Oswald', sans-serif;
+    letter-spacing: 1px;
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-align: left;
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--steel);
+    text-transform: uppercase;
+  }
+  .temp-log-table td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); font-family: 'Share Tech Mono', monospace; }
+  .temp-log-table td:nth-child(2) { color: var(--ember); }
+  @media (max-width: 600px) {
+    .meat-grid, .submission-grid { grid-template-columns: 1fr; }
+    header h1 { font-size: 1.1rem; }
+    .live-clock { font-size: 1.1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🔥 Pirata BBQ</h1>
+    <div class="subtitle">COMPETITION COMMAND CENTER</div>
+  </div>
+  <div class="live-clock">
+    <div id="clock">00:00:00</div>
+    <div class="date" id="date-display"></div>
+  </div>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('tracker',this)">🌡 Temps & Timers</button>
+  <button class="tab-btn" onclick="switchTab('submission',this)">⏱ Submission</button>
+  <button class="tab-btn" onclick="switchTab('checklist',this)">✅ Checklist</button>
+  <button class="tab-btn" onclick="switchTab('recipes',this)">📋 Recipes</button>
+  <button class="tab-btn" onclick="switchTab('log',this)">📓 Cook Log</button>
+</div>
+
+<div class="tab-panel active" id="tab-tracker">
+  <div class="meat-grid" id="meat-grid"></div>
+  <div class="card">
+    <div class="card-title">📊 Temperature Log</div>
+    <table class="temp-log-table">
+      <thead><tr><th>Time</th><th>Temp (°F)</th><th>Meat</th><th>Note</th></tr></thead>
+      <tbody id="temp-log-body"><tr><td colspan="4" style="color:var(--muted);padding:12px 10px;">No temps logged yet.</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="tab-panel" id="tab-submission">
+  <div class="card">
+    <div class="card-title">⏱ Turn-In Countdowns</div>
+    <div class="submission-grid" id="sub-grid"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">📋 Turn-In Order (KCBS Standard)</div>
+    <div style="font-size:0.85rem;color:var(--muted);line-height:2;">
+      <div>🐔 <strong style="color:var(--light)">Chicken</strong> — 12:00 PM</div>
+      <div>🐖 <strong style="color:var(--light)">Spareribs</strong> — 12:30 PM</div>
+      <div>🍖 <strong style="color:var(--light)">Pork Butt</strong> — 1:00 PM</div>
+      <div>🥩 <strong style="color:var(--light)">Brisket</strong> — 1:30 PM</div>
+      <div style="margin-top:10px;font-size:0.75rem;">* Edit your actual times above.</div>
+    </div>
+  </div>
+</div>
+
+<div class="tab-panel" id="tab-checklist">
+  <div id="checklist-container"></div>
+</div>
+
+<div class="tab-panel" id="tab-recipes">
+  <div id="recipe-container"></div>
+</div>
+
+<div class="tab-panel" id="tab-log">
+  <div class="card">
+    <div class="card-title">📝 Cook Log</div>
+    <div style="display:flex;gap:10px;margin-bottom:14px;">
+      <input id="log-input" type="text" placeholder="Add a note..." style="flex:1;background:var(--smoke);border:1px solid var(--steel);border-radius:4px;color:var(--light);font-family:'Barlow',sans-serif;font-size:0.9rem;padding:10px 12px;outline:none;">
+      <button class="btn" onclick="addLog()">ADD</button>
+    </div>
+    <div id="log-entries"><div style="color:var(--muted);font-size:0.85rem;">No entries yet.</div></div>
+  </div>
+</div>
+
+<script>
+const MEATS = [
+  { id:'chicken', name:'🐔 Chicken', targetTemp: 165 },
+  { id:'ribs',    name:'🐖 Spareribs', targetTemp: 203 },
+  { id:'butt',    name:'🍖 Pork Butt', targetTemp: 203 },
+  { id:'brisket', name:'🥩 Brisket', targetTemp: 205 },
+];
+const CHECKLISTS = {
+  'Pre-Cook Setup': [
+    'Fire up Kingsford — target 225°F pit temp',
+    'Prepare all injections (28 oz containers)',
+    'Brine chicken (start night before)',
+    'Inject pork butt, ribs, brisket',
+    'Apply rubs — bottom then top',
+    'Lay pecan wood chunks out (for halfway point)',
+    'Set turn-in boxes out',
+    'Fill spray bottles',
+  ],
+  'During Cook': [
+    'Verify pit temp stable at 225°F',
+    'Log temps every 30 mins',
+    'Add pecan at halfway point',
+    'Wrap ribs at stall (165°F)',
+    'Wrap brisket at stall (165°F)',
+    'Foil pork butt when barked',
+    'Prep chicken box garnish',
+    'Brush on BBQ sauce — chicken last 15 min',
+  ],
+  'Turn-In Prep': [
+    'Slice brisket against grain — half-inch',
+    'Pull/chunk pork butt',
+    'Cut ribs between bones',
+    'Thigh/drum separation for chicken',
+    'Box presentation tight and uniform',
+    'No sauce pooling in box',
+    'Submit on time!',
+  ],
+};
+const RECIPES = [
+  { name:'🍖 Pork Butt Injection', rubs:'LC Rawhide · Chicken Fried Rib Rub · Blues Hog Savory', ingredients:[['2 cups','Apple Juice'],['2 tbsp','Phosphates'],['½ cup','LC Butt Hurt'],['¼ cup','Kosmo Pork'],['—','Distilled water to 28 oz']] },
+  { name:'🐖 Spareribs Injection', rubs:'Killer Hog Hot · LC Honey Hole · LC Rawhide', ingredients:[['2 cups','Apple Juice'],['2 tbsp','Phosphates'],['½ cup','Boss Hog'],['¼ cup','Kosmo Pork (sub: LC Honey Hole Austin Q)'],['—','Distilled water to 28 oz']] },
+  { name:'🥩 Rodeo Brisket Injection', rubs:'Juicy Pig · Basic Beef · Texas Beef', ingredients:[['to 28 oz','Beef Stock or Broth'],['¾ cup','LC Playbull'],['2 tbsp','Phosphates']] },
+  { name:'🐔 Chicken Injection', rubs:'See Chicken Rub section', ingredients:[['2 cups','Chicken Broth'],['1 tub','Knorr Homestyle Stock'],['1 tbsp','Knorr Ultimate Liquid Chicken Base'],['1 tsp','Knorr Caldo de Pollo'],['¼ tsp',"Adolph's Powder Tenderizer"],['1 tsp','TC Original Seasoning'],['3 tbsp','TC Creole Butter'],['1 tsp','Smokie Okie Juice Phosphate'],['¼ tbsp','MSG'],['1 tsp',"Butcher's Honey Rub"],['—','Distilled water to 28 oz']] },
+  { name:'🐔 Chicken Brine', rubs:'', ingredients:[['½ gal','Water'],['1¼ cups','Morton Kosher Salt'],['1 cup','Light Brown Sugar'],['1 tsp',"Adolph's Tenderizer"],['— whisk —','Dissolve 10 min, then add:'],['3 tbsp','Knorr Caldo de Pollo'],['2 tsp','Black Pepper'],['1 tbsp','Knorr Liquid Chicken Base'],['1 tbsp','Kitchen Accomplice Chicken Broth Concentrate'],['2 tbsp','TC Original Creole Seasoning'],['1 cup','TC Creole Butter']] },
+  { name:'🍗 Chicken Rub — Bottom', rubs:'', ingredients:[['—','Parkay'],['—','Chef Merito'],['—','Fiesta Chicken Rub']] },
+  { name:'🍗 Chicken Rub — Top', rubs:'', ingredients:[['—','Parkay (even, under skin)'],['—','3 half toothpicks to secure skin'],['—','Fiesta Chicken Rub'],['—','Chef Merito'],['—',"Butcher's Honey Rub (light)"],['—','Coarse pepper (for look)'],['—',"Butcher's Honey Rub finishing dust"],['—','Spray with Parkay']] },
+  { name:'🍯 Chicken BBQ Sauce', rubs:'', ingredients:[['1 bottle','Head Country Original'],['½ bottle',"Stubb's Spicy"],['¼ cup','Honey']] },
+];
+
+let timers = {}, checkState = {}, logs = [], tempLogs = {}, subTimers = {};
+
+function updateClock() {
+  const now = new Date();
+  document.getElementById('clock').textContent = now.toLocaleTimeString('en-US',{hour12:false});
+  document.getElementById('date-display').textContent = now.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+}
+setInterval(updateClock, 1000); updateClock();
+
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function buildMeatGrid() {
+  const grid = document.getElementById('meat-grid');
+  grid.innerHTML = '';
+  MEATS.forEach(meat => {
+    const div = document.createElement('div');
+    div.className = 'meat-card';
+    div.innerHTML = `
+      <h3>${meat.name}</h3>
+      <span class="status-badge" id="badge-${meat.id}">IDLE</span>
+      <div class="temp-row">
+        <div class="temp-input-wrap"><label>Pit Temp °F</label><input class="temp-input" type="number" id="pit-${meat.id}" placeholder="225"></div>
+        <div class="temp-input-wrap"><label>Meat Temp °F</label><input class="temp-input" type="number" id="meat-${meat.id}" placeholder="${meat.targetTemp}" oninput="logTemp('${meat.id}')"></div>
+      </div>
+      <div class="timer-row">
+        <div class="timer-display" id="timer-${meat.id}">00:00:00</div>
+        <button class="btn" id="tbtn-${meat.id}" onclick="toggleTimer('${meat.id}')">START</button>
+        <button class="btn secondary" onclick="resetTimer('${meat.id}')">↺</button>
+      </div>
+      <textarea class="notes-input" placeholder="Notes..."></textarea>
+    `;
+    grid.appendChild(div);
+    timers[meat.id] = { running:false, seconds:0, interval:null };
+  });
+}
+
+function toggleTimer(id) {
+  const t = timers[id];
+  const btn = document.getElementById('tbtn-'+id);
+  const disp = document.getElementById('timer-'+id);
+  const badge = document.getElementById('badge-'+id);
+  if (!t.running) {
+    t.running = true; btn.textContent='PAUSE'; disp.classList.add('running');
+    badge.textContent='COOKING'; badge.className='status-badge active';
+    t.interval = setInterval(()=>{ t.seconds++; disp.textContent=formatTime(t.seconds); },1000);
+    addLogEntry(MEATS.find(m=>m.id===id).name+' — timer started');
+  } else {
+    t.running=false; btn.textContent='RESUME'; disp.classList.remove('running'); clearInterval(t.interval);
+  }
+}
+
+function resetTimer(id) {
+  const t = timers[id]; clearInterval(t.interval);
+  t.running=false; t.seconds=0;
+  document.getElementById('timer-'+id).textContent='00:00:00';
+  document.getElementById('timer-'+id).classList.remove('running');
+  document.getElementById('tbtn-'+id).textContent='START';
+  document.getElementById('badge-'+id).textContent='IDLE';
+  document.getElementById('badge-'+id).className='status-badge';
+}
+
+function logTemp(meatId) {
+  const val = document.getElementById('meat-'+meatId).value;
+  if (!val) return;
+  const meat = MEATS.find(m=>m.id===meatId);
+  const now = new Date().toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit'});
+  if (!tempLogs[meatId]) tempLogs[meatId] = [];
+  tempLogs[meatId].unshift({time:now,temp:val,meat:meat.name.replace(/^[^\s]+\s/,'')});
+  renderTempLog();
+  if (parseInt(val) >= meat.targetTemp) {
+    document.getElementById('badge-'+meatId).textContent='DONE ✓';
+    document.getElementById('badge-'+meatId).className='status-badge done';
+    addLogEntry(meat.name+` hit target ${meat.targetTemp}°F! 🎉`);
+  }
+}
+
+function renderTempLog() {
+  const all = Object.values(tempLogs).flat().sort((a,b)=>b.time.localeCompare(a.time));
+  const tbody = document.getElementById('temp-log-body');
+  if (!all.length) { tbody.innerHTML='<tr><td colspan="4" style="color:var(--muted);padding:12px 10px;">No temps logged yet.</td></tr>'; return; }
+  tbody.innerHTML = all.slice(0,20).map(e=>`<tr><td>${e.time}</td><td>${e.temp}°F</td><td>${e.meat}</td><td></td></tr>`).join('');
+}
+
+function formatTime(s) {
+  return [Math.floor(s/3600),Math.floor((s%3600)/60),s%60].map(n=>String(n).padStart(2,'0')).join(':');
+}
+
+const SUB_MEATS=['Chicken','Spareribs','Pork Butt','Brisket'];
+const DEFAULT_TIMES=['12:00','12:30','13:00','13:30'];
+
+function buildSubmissionGrid() {
+  const grid = document.getElementById('sub-grid');
+  grid.innerHTML='';
+  SUB_MEATS.forEach((name,i)=>{
+    const div=document.createElement('div'); div.className='sub-card';
+    div.innerHTML=`<h3>${name}</h3><div class="countdown-display" id="cd-${i}">--:--</div><div class="time-set"><input type="time" id="sub-time-${i}" value="${DEFAULT_TIMES[i]}"></div>`;
+    grid.appendChild(div);
+  });
+  setInterval(updateAllSubTimers,1000); updateAllSubTimers();
+}
+
+function updateAllSubTimers() {
+  const now=new Date();
+  SUB_MEATS.forEach((_,i)=>{
+    const inp=document.getElementById('sub-time-'+i); if(!inp) return;
+    const [h,m]=inp.value.split(':').map(Number);
+    const target=new Date(); target.setHours(h,m,0,0);
+    const diff=Math.floor((target-now)/1000);
+    const disp=document.getElementById('cd-'+i); if(!disp) return;
+    if(diff<0){disp.textContent='SUBMITTED';disp.className='countdown-display ok';}
+    else{const mm=String(Math.floor(diff/60)).padStart(2,'0'),ss=String(diff%60).padStart(2,'0');disp.textContent=`${mm}m ${ss}s`;disp.className=diff<300?'countdown-display urgent':'countdown-display';}
+  });
+}
+
+function buildChecklist() {
+  const container=document.getElementById('checklist-container'); container.innerHTML='';
+  Object.entries(CHECKLISTS).forEach(([section,items])=>{
+    const checked=items.filter((_,i)=>checkState[section+i]).length;
+    const div=document.createElement('div'); div.className='checklist-section';
+    div.innerHTML=`<h3>${section}</h3>
+      <div class="check-progress"><div class="progress-bar"><div class="progress-fill" style="width:${(checked/items.length)*100}%"></div></div><div class="progress-label">${checked}/${items.length}</div></div>
+      ${items.map((item,i)=>`<div class="check-item ${checkState[section+i]?'checked':''}" onclick="toggleCheck('${section}',${i})">
+        <div class="custom-check">${checkState[section+i]?'✓':''}</div>
+        <div class="check-label">${item}</div></div>`).join('')}`;
+    container.appendChild(div);
+  });
+}
+
+function toggleCheck(section,i) {
+  checkState[section+i]=!checkState[section+i];
+  if(checkState[section+i]) addLogEntry('✓ '+CHECKLISTS[section][i]);
+  buildChecklist();
+}
+
+function buildRecipes() {
+  document.getElementById('recipe-container').innerHTML=RECIPES.map((r,i)=>`
+    <div class="recipe-section">
+      <div class="recipe-header" onclick="toggleRecipe(${i},this)">${r.name}<span class="arrow">▼</span></div>
+      <div class="recipe-body" id="rb-${i}">
+        ${r.rubs?`<div class="recipe-col"><h4>Rubs</h4><div style="color:var(--ember);font-size:0.85rem;margin-bottom:10px;">${r.rubs}</div></div>`:''}
+        <div class="recipe-col"><h4>Ingredients</h4><ul class="ingredient-list">${r.ingredients.map(([a,n])=>`<li><span class="amt">${a}</span>${n}</li>`).join('')}</ul></div>
+      </div></div>`).join('');
+}
+
+function toggleRecipe(i,header) {
+  document.getElementById('rb-'+i).classList.toggle('open');
+  header.classList.toggle('open');
+}
+
+function addLog() {
+  const inp=document.getElementById('log-input');
+  const msg=inp.value.trim(); if(!msg) return;
+  inp.value=''; addLogEntry(msg);
+}
+
+function addLogEntry(msg) {
+  const now=new Date().toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit'});
+  logs.unshift({time:now,msg}); renderLog();
+}
+
+document.getElementById('log-input').addEventListener('keydown',e=>{if(e.key==='Enter')addLog();});
+
+function renderLog() {
+  const c=document.getElementById('log-entries');
+  c.innerHTML=logs.length?logs.slice(0,50).map(e=>`<div class="log-entry"><span class="log-time">${e.time}</span><span>${e.msg}</span></div>`).join(''):'<div style="color:var(--muted);font-size:0.85rem;">No entries yet.</div>';
+}
+
+buildMeatGrid(); buildSubmissionGrid(); buildChecklist(); buildRecipes();
+</script>
+</body>
+</html>
