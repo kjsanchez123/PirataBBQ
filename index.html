@@ -120,8 +120,8 @@
   <div class="tagline">Competition Command Center</div>
   <div class="password-box">
     <label>Enter Team Password</label>
-    <input type="password" id="pw-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkPassword()">
-    <button class="btn" onclick="checkPassword()" style="width:100%;padding:12px;font-size:1rem;letter-spacing:2px;">ENTER</button>
+    <input type="password" id="pw-input-field" placeholder="••••••••">
+    <button class="btn" id="pw-btn" style="width:100%;padding:12px;font-size:1rem;letter-spacing:2px;">ENTER</button>
     <div class="error" id="pw-error">⚠ Incorrect password. Try again.</div>
   </div>
 </div>
@@ -202,6 +202,34 @@
 </div>
 
 <!-- Firebase SDKs -->
+<script>
+// Password gate runs before Firebase module loads
+document.addEventListener("DOMContentLoaded", function() {
+  const pwBtn = document.getElementById("pw-btn");
+  const pwInput = document.getElementById("pw-input-field");
+  const pwError = document.getElementById("pw-error");
+  const pwScreen = document.getElementById("password-screen");
+  const loading = document.getElementById("loading");
+
+  function checkPassword() {
+    if (pwInput.value === "DR+Austin") {
+      pwScreen.style.display = "none";
+      loading.style.display = "flex";
+      window._appUnlocked = true;
+      document.dispatchEvent(new Event("appUnlocked"));
+    } else {
+      pwError.classList.add("show");
+      pwInput.value = "";
+      pwInput.focus();
+    }
+  }
+
+  pwBtn.addEventListener("click", checkPassword);
+  pwInput.addEventListener("keydown", e => { if (e.key === "Enter") checkPassword(); });
+  pwInput.focus();
+});
+</script>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, set, onValue, push, update } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
@@ -253,19 +281,9 @@ let logData = [];
 let userId = 'User';
 
 // ─── AUTH ─────────────────────────────────────────────────────────────
-// Password check function
-window.checkPassword = function() {
-  const val = document.getElementById("pw-input").value;
-  if (val === "DR+Austin") {
-    document.getElementById("password-screen").style.display = "none";
-    document.getElementById("loading").style.display = "flex";
-    startApp();
-  } else {
-    document.getElementById("pw-error").classList.add("show");
-    document.getElementById("pw-input").value = "";
-    document.getElementById("pw-input").focus();
-  }
-};
+// Wait for password unlock before starting app
+document.addEventListener("appUnlocked", startApp);
+
 
 function startApp() {
 signInAnonymously(auth).then(cred => {
