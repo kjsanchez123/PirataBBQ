@@ -7,255 +7,72 @@
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Share+Tech+Mono&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --fire: #FF5A00;
-    --ember: #FF8C00;
-    --smoke: #1a1a1a;
-    --ash: #2c2c2c;
-    --steel: #3a3a3a;
-    --light: #f0ebe3;
-    --muted: #8a8078;
-    --green: #4caf50;
-    --red: #e53935;
-    --yellow: #FFC107;
+    --fire: #FF5A00; --ember: #FF8C00; --smoke: #1a1a1a;
+    --ash: #2c2c2c; --steel: #3a3a3a; --light: #f0ebe3;
+    --muted: #8a8078; --green: #4caf50; --red: #e53935; --yellow: #FFC107;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    background: var(--smoke);
-    color: var(--light);
-    font-family: 'Barlow', sans-serif;
-    min-height: 100vh;
-    background-image: repeating-linear-gradient(
-      0deg, transparent, transparent 40px, rgba(255,255,255,0.015) 40px, rgba(255,255,255,0.015) 41px
-    );
+    background: var(--smoke); color: var(--light);
+    font-family: 'Barlow', sans-serif; min-height: 100vh;
+    background-image: repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.015) 40px, rgba(255,255,255,0.015) 41px);
   }
   header {
     background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%);
     border-bottom: 3px solid var(--fire);
-    padding: 12px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky; top: 0; z-index: 100;
+    padding: 12px 20px; display: flex; align-items: center;
+    justify-content: space-between; position: sticky; top: 0; z-index: 100;
     box-shadow: 0 4px 20px rgba(255,90,0,0.3);
   }
-  header h1 {
-    font-family: 'Oswald', sans-serif;
-    font-size: 1.6rem;
-    font-weight: 700;
-    letter-spacing: 3px;
-    color: var(--fire);
-    text-transform: uppercase;
-  }
+  header h1 { font-family: 'Oswald', sans-serif; font-size: 1.6rem; font-weight: 700; letter-spacing: 3px; color: var(--fire); text-transform: uppercase; }
   header .subtitle { font-size: 0.7rem; color: var(--muted); letter-spacing: 2px; }
-  .live-clock {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 1.5rem;
-    color: var(--ember);
-    text-align: right;
-  }
+  .live-clock { font-family: 'Share Tech Mono', monospace; font-size: 1.5rem; color: var(--ember); text-align: right; }
   .live-clock .date { font-size: 0.65rem; color: var(--muted); letter-spacing: 1px; }
-  .tabs {
-    display: flex;
-    background: #111;
-    border-bottom: 2px solid var(--steel);
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  .tab-btn {
-    font-family: 'Oswald', sans-serif;
-    letter-spacing: 1.5px;
-    font-size: 0.85rem;
-    padding: 14px 24px;
-    background: none;
-    border: none;
-    color: var(--muted);
-    cursor: pointer;
-    border-bottom: 3px solid transparent;
-    transition: all 0.2s;
-    white-space: nowrap;
-    text-transform: uppercase;
-  }
+  .sync-status { font-size: 0.65rem; font-family: 'Share Tech Mono', monospace; padding: 3px 8px; border-radius: 20px; margin-top: 4px; text-align: center; }
+  .sync-status.connected { background: rgba(76,175,80,0.2); color: var(--green); }
+  .sync-status.disconnected { background: rgba(229,57,53,0.2); color: var(--red); }
+  .sync-status.connecting { background: rgba(255,193,7,0.2); color: var(--yellow); }
+  .tabs { display: flex; background: #111; border-bottom: 2px solid var(--steel); overflow-x: auto; scrollbar-width: none; }
+  .tab-btn { font-family: 'Oswald', sans-serif; letter-spacing: 1.5px; font-size: 0.85rem; padding: 14px 24px; background: none; border: none; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; white-space: nowrap; text-transform: uppercase; }
   .tab-btn.active { color: var(--fire); border-bottom-color: var(--fire); }
   .tab-btn:hover:not(.active) { color: var(--light); }
   .tab-panel { display: none; padding: 20px; }
   .tab-panel.active { display: block; }
-  .card {
-    background: var(--ash);
-    border: 1px solid var(--steel);
-    border-radius: 6px;
-    padding: 16px;
-    margin-bottom: 16px;
-  }
-  .card-title {
-    font-family: 'Oswald', sans-serif;
-    font-size: 1rem;
-    letter-spacing: 2px;
-    color: var(--ember);
-    text-transform: uppercase;
-    margin-bottom: 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+  .card { background: var(--ash); border: 1px solid var(--steel); border-radius: 6px; padding: 16px; margin-bottom: 16px; }
+  .card-title { font-family: 'Oswald', sans-serif; font-size: 1rem; letter-spacing: 2px; color: var(--ember); text-transform: uppercase; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
   .meat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .meat-card {
-    background: #111;
-    border: 1px solid var(--steel);
-    border-radius: 8px;
-    padding: 16px;
-    border-top: 3px solid var(--fire);
-    position: relative;
-  }
-  .meat-card h3 {
-    font-family: 'Oswald', sans-serif;
-    font-size: 1.1rem;
-    letter-spacing: 2px;
-    color: var(--light);
-    margin-bottom: 12px;
-  }
-  .meat-card .status-badge {
-    position: absolute;
-    top: 12px; right: 12px;
-    font-size: 0.65rem;
-    font-family: 'Share Tech Mono', monospace;
-    padding: 3px 8px;
-    border-radius: 20px;
-    background: var(--steel);
-    color: var(--muted);
-  }
-  .meat-card .status-badge.active { background: rgba(76,175,80,0.2); color: var(--green); }
-  .meat-card .status-badge.done { background: rgba(255,90,0,0.2); color: var(--fire); }
+  .meat-card { background: #111; border: 1px solid var(--steel); border-radius: 8px; padding: 16px; border-top: 3px solid var(--fire); position: relative; }
+  .meat-card h3 { font-family: 'Oswald', sans-serif; font-size: 1.1rem; letter-spacing: 2px; color: var(--light); margin-bottom: 12px; }
+  .status-badge { position: absolute; top: 12px; right: 12px; font-size: 0.65rem; font-family: 'Share Tech Mono', monospace; padding: 3px 8px; border-radius: 20px; background: var(--steel); color: var(--muted); }
+  .status-badge.active { background: rgba(76,175,80,0.2); color: var(--green); }
+  .status-badge.done { background: rgba(255,90,0,0.2); color: var(--fire); }
   .temp-row { display: flex; gap: 10px; margin-bottom: 10px; }
   .temp-input-wrap { flex: 1; }
   .temp-input-wrap label { font-size: 0.65rem; color: var(--muted); letter-spacing: 1px; display: block; margin-bottom: 4px; text-transform: uppercase; }
-  .temp-input {
-    width: 100%;
-    background: var(--smoke);
-    border: 1px solid var(--steel);
-    border-radius: 4px;
-    color: var(--ember);
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 1.3rem;
-    padding: 8px 10px;
-    text-align: center;
-    outline: none;
-  }
+  .temp-input { width: 100%; background: var(--smoke); border: 1px solid var(--steel); border-radius: 4px; color: var(--ember); font-family: 'Share Tech Mono', monospace; font-size: 1.3rem; padding: 8px 10px; text-align: center; outline: none; }
   .temp-input:focus { border-color: var(--fire); }
   .timer-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
-  .timer-display {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 1.6rem;
-    color: var(--light);
-    background: var(--smoke);
-    border-radius: 4px;
-    padding: 6px 12px;
-    flex: 1;
-    text-align: center;
-    border: 1px solid var(--steel);
-  }
+  .timer-display { font-family: 'Share Tech Mono', monospace; font-size: 1.6rem; color: var(--light); background: var(--smoke); border-radius: 4px; padding: 6px 12px; flex: 1; text-align: center; border: 1px solid var(--steel); }
   .timer-display.running { color: var(--green); border-color: var(--green); }
-  .btn {
-    background: var(--fire);
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 8px 14px;
-    font-family: 'Oswald', sans-serif;
-    font-size: 0.8rem;
-    letter-spacing: 1px;
-    cursor: pointer;
-    transition: background 0.2s;
-    text-transform: uppercase;
-  }
+  .btn { background: var(--fire); color: #fff; border: none; border-radius: 4px; padding: 8px 14px; font-family: 'Oswald', sans-serif; font-size: 0.8rem; letter-spacing: 1px; cursor: pointer; transition: background 0.2s; text-transform: uppercase; }
   .btn:hover { background: var(--ember); }
   .btn.secondary { background: var(--steel); }
-  .notes-input {
-    width: 100%;
-    background: var(--smoke);
-    border: 1px solid var(--steel);
-    border-radius: 4px;
-    color: var(--light);
-    font-family: 'Barlow', sans-serif;
-    font-size: 0.85rem;
-    padding: 8px;
-    margin-top: 8px;
-    resize: none;
-    outline: none;
-    height: 52px;
-  }
+  .notes-input { width: 100%; background: var(--smoke); border: 1px solid var(--steel); border-radius: 4px; color: var(--light); font-family: 'Barlow', sans-serif; font-size: 0.85rem; padding: 8px; margin-top: 8px; resize: none; outline: none; height: 52px; }
   .submission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .sub-card {
-    background: #111;
-    border: 1px solid var(--steel);
-    border-radius: 8px;
-    padding: 16px;
-    text-align: center;
-  }
-  .sub-card h3 {
-    font-family: 'Oswald', sans-serif;
-    font-size: 0.9rem;
-    letter-spacing: 2px;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-  .countdown-display {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 2rem;
-    color: var(--ember);
-    margin: 8px 0;
-    min-height: 2.5rem;
-  }
+  .sub-card { background: #111; border: 1px solid var(--steel); border-radius: 8px; padding: 16px; text-align: center; }
+  .sub-card h3 { font-family: 'Oswald', sans-serif; font-size: 0.9rem; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
+  .countdown-display { font-family: 'Share Tech Mono', monospace; font-size: 2rem; color: var(--ember); margin: 8px 0; min-height: 2.5rem; }
   .countdown-display.urgent { color: var(--red); animation: pulse 1s infinite; }
   .countdown-display.ok { color: var(--green); }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
   .time-set { display: flex; gap: 6px; margin-top: 8px; align-items: center; justify-content: center; }
-  .time-set input {
-    background: var(--smoke);
-    border: 1px solid var(--steel);
-    border-radius: 4px;
-    color: var(--light);
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 1rem;
-    padding: 6px 8px;
-    width: 90px;
-    outline: none;
-    text-align: center;
-  }
+  .time-set input { background: var(--smoke); border: 1px solid var(--steel); border-radius: 4px; color: var(--light); font-family: 'Share Tech Mono', monospace; font-size: 1rem; padding: 6px 8px; width: 90px; outline: none; text-align: center; }
   .checklist-section { margin-bottom: 20px; }
-  .checklist-section h3 {
-    font-family: 'Oswald', sans-serif;
-    font-size: 0.9rem;
-    letter-spacing: 2px;
-    color: var(--ember);
-    text-transform: uppercase;
-    margin-bottom: 10px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid var(--steel);
-  }
-  .check-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 12px;
-    background: #111;
-    border-radius: 4px;
-    margin-bottom: 6px;
-    cursor: pointer;
-    border-left: 3px solid transparent;
-  }
+  .checklist-section h3 { font-family: 'Oswald', sans-serif; font-size: 0.9rem; letter-spacing: 2px; color: var(--ember); text-transform: uppercase; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--steel); }
+  .check-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; background: #111; border-radius: 4px; margin-bottom: 6px; cursor: pointer; border-left: 3px solid transparent; transition: all 0.15s; }
   .check-item.checked { border-left-color: var(--green); }
   .check-item.checked .check-label { text-decoration: line-through; color: var(--muted); }
-  .custom-check {
-    width: 20px; height: 20px;
-    border: 2px solid var(--steel);
-    border-radius: 4px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.8rem;
-  }
+  .custom-check { width: 20px; height: 20px; border: 2px solid var(--steel); border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; transition: all 0.15s; }
   .check-item.checked .custom-check { background: var(--green); border-color: var(--green); }
   .check-label { font-size: 0.9rem; }
   .check-progress { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
@@ -263,84 +80,48 @@
   .progress-fill { height: 100%; background: var(--fire); border-radius: 2px; transition: width 0.3s; }
   .progress-label { font-size: 0.75rem; color: var(--muted); font-family: 'Share Tech Mono', monospace; min-width: 40px; text-align: right; }
   .recipe-section { margin-bottom: 20px; }
-  .recipe-header {
-    font-family: 'Oswald', sans-serif;
-    font-size: 1rem;
-    letter-spacing: 2px;
-    color: var(--light);
-    text-transform: uppercase;
-    padding: 12px 14px;
-    background: #111;
-    border-radius: 6px 6px 0 0;
-    border: 1px solid var(--steel);
-    border-bottom: 2px solid var(--fire);
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+  .recipe-header { font-family: 'Oswald', sans-serif; font-size: 1rem; letter-spacing: 2px; color: var(--light); text-transform: uppercase; padding: 12px 14px; background: #111; border-radius: 6px 6px 0 0; border: 1px solid var(--steel); border-bottom: 2px solid var(--fire); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
   .recipe-header .arrow { transition: transform 0.2s; }
   .recipe-header.open .arrow { transform: rotate(180deg); }
-  .recipe-body {
-    display: none;
-    background: #0d0d0d;
-    border: 1px solid var(--steel);
-    border-top: none;
-    border-radius: 0 0 6px 6px;
-    padding: 14px;
-  }
+  .recipe-body { display: none; background: #0d0d0d; border: 1px solid var(--steel); border-top: none; border-radius: 0 0 6px 6px; padding: 14px; }
   .recipe-body.open { display: block; }
-  .recipe-col h4 {
-    font-family: 'Oswald', sans-serif;
-    font-size: 0.75rem;
-    letter-spacing: 2px;
-    color: var(--fire);
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
+  .recipe-col h4 { font-family: 'Oswald', sans-serif; font-size: 0.75rem; letter-spacing: 2px; color: var(--fire); text-transform: uppercase; margin-bottom: 6px; }
   .ingredient-list { list-style: none; }
-  .ingredient-list li {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.8rem;
-    color: var(--light);
-    padding: 4px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-    display: flex;
-    gap: 8px;
-  }
+  .ingredient-list li { font-family: 'Share Tech Mono', monospace; font-size: 0.8rem; color: var(--light); padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; gap: 8px; }
   .ingredient-list li .amt { color: var(--ember); min-width: 80px; }
   .log-entry { display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.8rem; }
   .log-time { font-family: 'Share Tech Mono', monospace; color: var(--muted); min-width: 55px; }
   .temp-log-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-  .temp-log-table th {
-    font-family: 'Oswald', sans-serif;
-    letter-spacing: 1px;
-    font-size: 0.7rem;
-    color: var(--muted);
-    text-align: left;
-    padding: 6px 10px;
-    border-bottom: 1px solid var(--steel);
-    text-transform: uppercase;
-  }
+  .temp-log-table th { font-family: 'Oswald', sans-serif; letter-spacing: 1px; font-size: 0.7rem; color: var(--muted); text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--steel); text-transform: uppercase; }
   .temp-log-table td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); font-family: 'Share Tech Mono', monospace; }
   .temp-log-table td:nth-child(2) { color: var(--ember); }
-  @media (max-width: 600px) {
-    .meat-grid, .submission-grid { grid-template-columns: 1fr; }
-    header h1 { font-size: 1.1rem; }
-    .live-clock { font-size: 1.1rem; }
-  }
+  .loading-overlay { position: fixed; inset: 0; background: var(--smoke); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 999; gap: 16px; }
+  .loading-overlay h2 { font-family: 'Oswald', sans-serif; color: var(--fire); letter-spacing: 3px; font-size: 1.4rem; }
+  .loading-overlay p { color: var(--muted); font-size: 0.85rem; }
+  .spinner { width: 40px; height: 40px; border: 3px solid var(--steel); border-top-color: var(--fire); border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (max-width: 600px) { .meat-grid, .submission-grid { grid-template-columns: 1fr; } header h1 { font-size: 1.1rem; } .live-clock { font-size: 1.1rem; } }
 </style>
 </head>
 <body>
+
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <h2>🔥 PIRATA BBQ</h2>
+  <p>Connecting to Firebase...</p>
+</div>
 
 <header>
   <div>
     <h1>🔥 Pirata BBQ</h1>
     <div class="subtitle">COMPETITION COMMAND CENTER</div>
   </div>
-  <div class="live-clock">
-    <div id="clock">00:00:00</div>
-    <div class="date" id="date-display"></div>
+  <div style="text-align:right;">
+    <div class="live-clock">
+      <div id="clock">00:00:00</div>
+      <div class="date" id="date-display"></div>
+    </div>
+    <div class="sync-status connecting" id="sync-status">⟳ CONNECTING</div>
   </div>
 </header>
 
@@ -357,7 +138,7 @@
   <div class="card">
     <div class="card-title">📊 Temperature Log</div>
     <table class="temp-log-table">
-      <thead><tr><th>Time</th><th>Temp (°F)</th><th>Meat</th><th>Note</th></tr></thead>
+      <thead><tr><th>Time</th><th>Temp (°F)</th><th>Meat</th><th>Logged By</th></tr></thead>
       <tbody id="temp-log-body"><tr><td colspan="4" style="color:var(--muted);padding:12px 10px;">No temps logged yet.</td></tr></tbody>
     </table>
   </div>
@@ -399,7 +180,27 @@
   </div>
 </div>
 
-<script>
+<!-- Firebase SDKs -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, onValue, push, update } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDdR2jWvGDL2VIJuj8GtwuUQyTxTyME1xo",
+  authDomain: "pirata-bbq.firebaseapp.com",
+  projectId: "pirata-bbq",
+  storageBucket: "pirata-bbq.firebasestorage.app",
+  messagingSenderId: "468672320098",
+  appId: "1:468672320098:web:dda4ba00e2b1cf101f373b",
+  databaseURL: "https://pirata-bbq-default-rtdb.firebaseio.com"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const auth = getAuth(app);
+
+// ─── DATA ────────────────────────────────────────────────────────────
 const MEATS = [
   { id:'chicken', name:'🐔 Chicken', targetTemp: 165 },
   { id:'ribs',    name:'🐖 Spareribs', targetTemp: 203 },
@@ -407,35 +208,9 @@ const MEATS = [
   { id:'brisket', name:'🥩 Brisket', targetTemp: 205 },
 ];
 const CHECKLISTS = {
-  'Pre-Cook Setup': [
-    'Fire up Kingsford — target 225°F pit temp',
-    'Prepare all injections (28 oz containers)',
-    'Brine chicken (start night before)',
-    'Inject pork butt, ribs, brisket',
-    'Apply rubs — bottom then top',
-    'Lay pecan wood chunks out (for halfway point)',
-    'Set turn-in boxes out',
-    'Fill spray bottles',
-  ],
-  'During Cook': [
-    'Verify pit temp stable at 225°F',
-    'Log temps every 30 mins',
-    'Add pecan at halfway point',
-    'Wrap ribs at stall (165°F)',
-    'Wrap brisket at stall (165°F)',
-    'Foil pork butt when barked',
-    'Prep chicken box garnish',
-    'Brush on BBQ sauce — chicken last 15 min',
-  ],
-  'Turn-In Prep': [
-    'Slice brisket against grain — half-inch',
-    'Pull/chunk pork butt',
-    'Cut ribs between bones',
-    'Thigh/drum separation for chicken',
-    'Box presentation tight and uniform',
-    'No sauce pooling in box',
-    'Submit on time!',
-  ],
+  'Pre-Cook Setup': ['Fire up Kingsford — target 225°F pit temp','Prepare all injections (28 oz containers)','Brine chicken (start night before)','Inject pork butt, ribs, brisket','Apply rubs — bottom then top','Lay pecan wood chunks out (for halfway point)','Set turn-in boxes out','Fill spray bottles'],
+  'During Cook': ['Verify pit temp stable at 225°F','Log temps every 30 mins','Add pecan at halfway point','Wrap ribs at stall (165°F)','Wrap brisket at stall (165°F)','Foil pork butt when barked','Prep chicken box garnish','Brush on BBQ sauce — chicken last 15 min'],
+  'Turn-In Prep': ['Slice brisket against grain — half-inch','Pull/chunk pork butt','Cut ribs between bones','Thigh/drum separation for chicken','Box presentation tight and uniform','No sauce pooling in box','Submit on time!'],
 };
 const RECIPES = [
   { name:'🍖 Pork Butt Injection', rubs:'LC Rawhide · Chicken Fried Rib Rub · Blues Hog Savory', ingredients:[['2 cups','Apple Juice'],['2 tbsp','Phosphates'],['½ cup','LC Butt Hurt'],['¼ cup','Kosmo Pork'],['—','Distilled water to 28 oz']] },
@@ -448,8 +223,88 @@ const RECIPES = [
   { name:'🍯 Chicken BBQ Sauce', rubs:'', ingredients:[['1 bottle','Head Country Original'],['½ bottle',"Stubb's Spicy"],['¼ cup','Honey']] },
 ];
 
-let timers = {}, checkState = {}, logs = [], tempLogs = {}, subTimers = {};
+// ─── STATE ────────────────────────────────────────────────────────────
+let timers = {};
+let checkState = {};
+let subTimes = { 0:'12:00', 1:'12:30', 2:'13:00', 3:'13:30' };
+let tempLogData = [];
+let logData = [];
+let userId = 'User';
 
+// ─── AUTH ─────────────────────────────────────────────────────────────
+signInAnonymously(auth).then(cred => {
+  userId = 'Pit' + cred.user.uid.substring(0,4).toUpperCase();
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('sync-status').textContent = '● LIVE';
+  document.getElementById('sync-status').className = 'sync-status connected';
+  initListeners();
+}).catch(err => {
+  console.error(err);
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('sync-status').textContent = '✕ OFFLINE';
+  document.getElementById('sync-status').className = 'sync-status disconnected';
+  initLocal();
+});
+
+// ─── FIREBASE LISTENERS ───────────────────────────────────────────────
+function initListeners() {
+  // Meat temps & status
+  onValue(ref(db, 'meats'), snap => {
+    const data = snap.val() || {};
+    MEATS.forEach(meat => {
+      const d = data[meat.id] || {};
+      const pitEl = document.getElementById('pit-'+meat.id);
+      const meatEl = document.getElementById('meat-'+meat.id);
+      const badge = document.getElementById('badge-'+meat.id);
+      if (pitEl && d.pitTemp !== undefined) pitEl.value = d.pitTemp;
+      if (meatEl && d.meatTemp !== undefined) meatEl.value = d.meatTemp;
+      if (badge) {
+        if (d.status === 'done') { badge.textContent='DONE ✓'; badge.className='status-badge done'; }
+        else if (d.status === 'cooking') { badge.textContent='COOKING'; badge.className='status-badge active'; }
+        else { badge.textContent='IDLE'; badge.className='status-badge'; }
+      }
+    });
+  });
+
+  // Checklist
+  onValue(ref(db, 'checklist'), snap => {
+    checkState = snap.val() || {};
+    buildChecklist();
+  });
+
+  // Submission times
+  onValue(ref(db, 'subTimes'), snap => {
+    const d = snap.val();
+    if (d) {
+      subTimes = d;
+      Object.keys(d).forEach(i => {
+        const el = document.getElementById('sub-time-'+i);
+        if (el) el.value = d[i];
+      });
+    }
+  });
+
+  // Temp log
+  onValue(ref(db, 'tempLog'), snap => {
+    const d = snap.val() || {};
+    tempLogData = Object.values(d).sort((a,b) => b.ts - a.ts);
+    renderTempLog();
+  });
+
+  // Cook log
+  onValue(ref(db, 'cookLog'), snap => {
+    const d = snap.val() || {};
+    logData = Object.values(d).sort((a,b) => b.ts - a.ts);
+    renderLog();
+  });
+}
+
+function initLocal() {
+  buildChecklist();
+  buildSubmissionGrid();
+}
+
+// ─── CLOCK ────────────────────────────────────────────────────────────
 function updateClock() {
   const now = new Date();
   document.getElementById('clock').textContent = now.toLocaleTimeString('en-US',{hour12:false});
@@ -457,13 +312,15 @@ function updateClock() {
 }
 setInterval(updateClock, 1000); updateClock();
 
-function switchTab(id, btn) {
+// ─── TABS ─────────────────────────────────────────────────────────────
+window.switchTab = function(id, btn) {
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
   btn.classList.add('active');
 }
 
+// ─── MEAT TRACKER ─────────────────────────────────────────────────────
 function buildMeatGrid() {
   const grid = document.getElementById('meat-grid');
   grid.innerHTML = '';
@@ -474,85 +331,96 @@ function buildMeatGrid() {
       <h3>${meat.name}</h3>
       <span class="status-badge" id="badge-${meat.id}">IDLE</span>
       <div class="temp-row">
-        <div class="temp-input-wrap"><label>Pit Temp °F</label><input class="temp-input" type="number" id="pit-${meat.id}" placeholder="225"></div>
-        <div class="temp-input-wrap"><label>Meat Temp °F</label><input class="temp-input" type="number" id="meat-${meat.id}" placeholder="${meat.targetTemp}" oninput="logTemp('${meat.id}')"></div>
+        <div class="temp-input-wrap"><label>Pit Temp °F</label><input class="temp-input" type="number" id="pit-${meat.id}" placeholder="225" onchange="savePitTemp('${meat.id}',this.value)"></div>
+        <div class="temp-input-wrap"><label>Meat Temp °F</label><input class="temp-input" type="number" id="meat-${meat.id}" placeholder="${meat.targetTemp}" onchange="saveMeatTemp('${meat.id}',this.value)"></div>
       </div>
       <div class="timer-row">
         <div class="timer-display" id="timer-${meat.id}">00:00:00</div>
         <button class="btn" id="tbtn-${meat.id}" onclick="toggleTimer('${meat.id}')">START</button>
         <button class="btn secondary" onclick="resetTimer('${meat.id}')">↺</button>
       </div>
-      <textarea class="notes-input" placeholder="Notes..."></textarea>
+      <textarea class="notes-input" placeholder="Notes..." onchange="saveNote('${meat.id}',this.value)"></textarea>
     `;
     grid.appendChild(div);
     timers[meat.id] = { running:false, seconds:0, interval:null };
   });
 }
 
-function toggleTimer(id) {
+window.savePitTemp = function(id, val) {
+  update(ref(db, 'meats/'+id), { pitTemp: val });
+};
+
+window.saveMeatTemp = function(id, val) {
+  const meat = MEATS.find(m=>m.id===id);
+  const status = parseInt(val) >= meat.targetTemp ? 'done' : 'cooking';
+  update(ref(db, 'meats/'+id), { meatTemp: val, status });
+  // Log the temp
+  push(ref(db, 'tempLog'), {
+    time: new Date().toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit'}),
+    temp: val, meat: meat.name.replace(/^[^\s]+\s/,''),
+    by: userId, ts: Date.now()
+  });
+  if (status === 'done') {
+    pushLog(`${meat.name} hit target ${meat.targetTemp}°F! 🎉`);
+  }
+};
+
+window.saveNote = function(id, val) {
+  if (val) pushLog(`${MEATS.find(m=>m.id===id).name}: ${val}`);
+};
+
+window.toggleTimer = function(id) {
   const t = timers[id];
   const btn = document.getElementById('tbtn-'+id);
   const disp = document.getElementById('timer-'+id);
-  const badge = document.getElementById('badge-'+id);
   if (!t.running) {
-    t.running = true; btn.textContent='PAUSE'; disp.classList.add('running');
-    badge.textContent='COOKING'; badge.className='status-badge active';
+    t.running=true; btn.textContent='PAUSE'; disp.classList.add('running');
+    update(ref(db,'meats/'+id),{status:'cooking'});
     t.interval = setInterval(()=>{ t.seconds++; disp.textContent=formatTime(t.seconds); },1000);
-    addLogEntry(MEATS.find(m=>m.id===id).name+' — timer started');
+    pushLog(MEATS.find(m=>m.id===id).name+' — timer started by '+userId);
   } else {
     t.running=false; btn.textContent='RESUME'; disp.classList.remove('running'); clearInterval(t.interval);
   }
-}
+};
 
-function resetTimer(id) {
+window.resetTimer = function(id) {
   const t = timers[id]; clearInterval(t.interval);
   t.running=false; t.seconds=0;
   document.getElementById('timer-'+id).textContent='00:00:00';
   document.getElementById('timer-'+id).classList.remove('running');
   document.getElementById('tbtn-'+id).textContent='START';
-  document.getElementById('badge-'+id).textContent='IDLE';
-  document.getElementById('badge-'+id).className='status-badge';
-}
-
-function logTemp(meatId) {
-  const val = document.getElementById('meat-'+meatId).value;
-  if (!val) return;
-  const meat = MEATS.find(m=>m.id===meatId);
-  const now = new Date().toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit'});
-  if (!tempLogs[meatId]) tempLogs[meatId] = [];
-  tempLogs[meatId].unshift({time:now,temp:val,meat:meat.name.replace(/^[^\s]+\s/,'')});
-  renderTempLog();
-  if (parseInt(val) >= meat.targetTemp) {
-    document.getElementById('badge-'+meatId).textContent='DONE ✓';
-    document.getElementById('badge-'+meatId).className='status-badge done';
-    addLogEntry(meat.name+` hit target ${meat.targetTemp}°F! 🎉`);
-  }
-}
+  update(ref(db,'meats/'+id),{status:'idle'});
+};
 
 function renderTempLog() {
-  const all = Object.values(tempLogs).flat().sort((a,b)=>b.time.localeCompare(a.time));
   const tbody = document.getElementById('temp-log-body');
-  if (!all.length) { tbody.innerHTML='<tr><td colspan="4" style="color:var(--muted);padding:12px 10px;">No temps logged yet.</td></tr>'; return; }
-  tbody.innerHTML = all.slice(0,20).map(e=>`<tr><td>${e.time}</td><td>${e.temp}°F</td><td>${e.meat}</td><td></td></tr>`).join('');
+  if (!tempLogData.length) { tbody.innerHTML='<tr><td colspan="4" style="color:var(--muted);padding:12px 10px;">No temps logged yet.</td></tr>'; return; }
+  tbody.innerHTML = tempLogData.slice(0,20).map(e=>`<tr><td>${e.time}</td><td>${e.temp}°F</td><td>${e.meat}</td><td style="color:var(--muted)">${e.by||''}</td></tr>`).join('');
 }
 
 function formatTime(s) {
   return [Math.floor(s/3600),Math.floor((s%3600)/60),s%60].map(n=>String(n).padStart(2,'0')).join(':');
 }
 
-const SUB_MEATS=['Chicken','Spareribs','Pork Butt','Brisket'];
-const DEFAULT_TIMES=['12:00','12:30','13:00','13:30'];
+// ─── SUBMISSION ───────────────────────────────────────────────────────
+const SUB_MEATS = ['Chicken','Spareribs','Pork Butt','Brisket'];
 
 function buildSubmissionGrid() {
   const grid = document.getElementById('sub-grid');
   grid.innerHTML='';
   SUB_MEATS.forEach((name,i)=>{
     const div=document.createElement('div'); div.className='sub-card';
-    div.innerHTML=`<h3>${name}</h3><div class="countdown-display" id="cd-${i}">--:--</div><div class="time-set"><input type="time" id="sub-time-${i}" value="${DEFAULT_TIMES[i]}"></div>`;
+    div.innerHTML=`<h3>${name}</h3><div class="countdown-display" id="cd-${i}">--:--</div>
+      <div class="time-set"><input type="time" id="sub-time-${i}" value="${subTimes[i]||'12:00'}" onchange="saveSubTime(${i},this.value)"></div>`;
     grid.appendChild(div);
   });
   setInterval(updateAllSubTimers,1000); updateAllSubTimers();
 }
+
+window.saveSubTime = function(i, val) {
+  subTimes[i] = val;
+  set(ref(db,'subTimes'), subTimes);
+};
 
 function updateAllSubTimers() {
   const now=new Date();
@@ -567,26 +435,29 @@ function updateAllSubTimers() {
   });
 }
 
+// ─── CHECKLIST ────────────────────────────────────────────────────────
 function buildChecklist() {
   const container=document.getElementById('checklist-container'); container.innerHTML='';
   Object.entries(CHECKLISTS).forEach(([section,items])=>{
-    const checked=items.filter((_,i)=>checkState[section+i]).length;
+    const checked=items.filter((_,i)=>checkState[section+'_'+i]).length;
     const div=document.createElement('div'); div.className='checklist-section';
     div.innerHTML=`<h3>${section}</h3>
       <div class="check-progress"><div class="progress-bar"><div class="progress-fill" style="width:${(checked/items.length)*100}%"></div></div><div class="progress-label">${checked}/${items.length}</div></div>
-      ${items.map((item,i)=>`<div class="check-item ${checkState[section+i]?'checked':''}" onclick="toggleCheck('${section}',${i})">
-        <div class="custom-check">${checkState[section+i]?'✓':''}</div>
+      ${items.map((item,i)=>`<div class="check-item ${checkState[section+'_'+i]?'checked':''}" onclick="toggleCheck('${section}',${i})">
+        <div class="custom-check">${checkState[section+'_'+i]?'✓':''}</div>
         <div class="check-label">${item}</div></div>`).join('')}`;
     container.appendChild(div);
   });
 }
 
-function toggleCheck(section,i) {
-  checkState[section+i]=!checkState[section+i];
-  if(checkState[section+i]) addLogEntry('✓ '+CHECKLISTS[section][i]);
-  buildChecklist();
-}
+window.toggleCheck = function(section, i) {
+  const key = section+'_'+i;
+  checkState[key] = !checkState[key];
+  set(ref(db,'checklist'), checkState);
+  if (checkState[key]) pushLog('✓ '+CHECKLISTS[section][i]+' ('+userId+')');
+};
 
+// ─── RECIPES ──────────────────────────────────────────────────────────
 function buildRecipes() {
   document.getElementById('recipe-container').innerHTML=RECIPES.map((r,i)=>`
     <div class="recipe-section">
@@ -597,30 +468,36 @@ function buildRecipes() {
       </div></div>`).join('');
 }
 
-function toggleRecipe(i,header) {
+window.toggleRecipe = function(i, header) {
   document.getElementById('rb-'+i).classList.toggle('open');
   header.classList.toggle('open');
-}
+};
 
-function addLog() {
+// ─── LOG ──────────────────────────────────────────────────────────────
+window.addLog = function() {
   const inp=document.getElementById('log-input');
   const msg=inp.value.trim(); if(!msg) return;
-  inp.value=''; addLogEntry(msg);
+  inp.value=''; pushLog(msg+' ('+userId+')');
+};
+
+function pushLog(msg) {
+  push(ref(db,'cookLog'),{
+    time: new Date().toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit'}),
+    msg, ts: Date.now()
+  });
 }
 
-function addLogEntry(msg) {
-  const now=new Date().toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit'});
-  logs.unshift({time:now,msg}); renderLog();
-}
-
-document.getElementById('log-input').addEventListener('keydown',e=>{if(e.key==='Enter')addLog();});
+document.getElementById('log-input').addEventListener('keydown',e=>{if(e.key==='Enter')window.addLog();});
 
 function renderLog() {
   const c=document.getElementById('log-entries');
-  c.innerHTML=logs.length?logs.slice(0,50).map(e=>`<div class="log-entry"><span class="log-time">${e.time}</span><span>${e.msg}</span></div>`).join(''):'<div style="color:var(--muted);font-size:0.85rem;">No entries yet.</div>';
+  c.innerHTML=logData.length?logData.slice(0,50).map(e=>`<div class="log-entry"><span class="log-time">${e.time}</span><span>${e.msg}</span></div>`).join(''):'<div style="color:var(--muted);font-size:0.85rem;">No entries yet.</div>';
 }
 
-buildMeatGrid(); buildSubmissionGrid(); buildChecklist(); buildRecipes();
+// ─── INIT ─────────────────────────────────────────────────────────────
+buildMeatGrid();
+buildSubmissionGrid();
+buildRecipes();
 </script>
 </body>
 </html>
